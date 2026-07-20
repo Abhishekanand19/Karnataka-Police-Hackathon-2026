@@ -1,58 +1,122 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { Panel } from "@/components/ui/panel";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { History, Play, SkipBack, SkipForward, Clock, FileCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { StatCard } from "@/components/ui/stat-card";
+import { CaseHeaderBar } from "@/components/timeline/case-header-bar";
+import { HorizontalTimelineReplay, TimelineEvent } from "@/components/timeline/horizontal-timeline-replay";
+import { CaseExplorerSidebar, TimelineCaseItem, mockTimelineCases } from "@/components/timeline/case-explorer-sidebar";
+import { CaseIntelligencePanel } from "@/components/timeline/case-intelligence-panel";
+import { EvidenceFeedDrawer } from "@/components/timeline/evidence-feed-drawer";
+import { InvestigationNotesPanel } from "@/components/timeline/investigation-notes-panel";
+import { Clock, Play, FileText, ShieldAlert, Users, FolderCheck, Download, Plus } from "lucide-react";
 
 export default function TimelinePage() {
+  const [selectedCase, setSelectedCase] = useState<TimelineCaseItem>(mockTimelineCases[0]);
+  const [evidenceDrawerOpen, setEvidenceDrawerOpen] = useState(false);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 pb-8 select-none">
+      {/* Page Header */}
       <PageHeader
-        title="Investigation Timeline Replay"
-        description="Chronological step-by-step replay illustrating how multi-incident investigations evolved from initial FIR registration to arrest."
-        badge={<Badge variant="info">Phase 8 Feature Ready</Badge>}
+        title="Investigation Timeline & Case Intelligence Workspace"
+        description="Chronological replay engine tracking multi-incident cases from initial complaint to judicial chargesheet submission."
+        badge={
+          <Badge variant="accent">
+            <Clock className="w-3.5 h-3.5 mr-1" /> Replay Engine
+          </Badge>
+        }
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="secondary" icon={<SkipBack className="w-4 h-4" />}>
-              Rewind
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<FolderCheck className="w-3.5 h-3.5" />}
+              onClick={() => setEvidenceDrawerOpen(true)}
+            >
+              Open Evidence Feed
             </Button>
-            <Button variant="primary" icon={<Play className="w-4 h-4" />}>
-              Play Sequence
-            </Button>
-            <Button variant="secondary" icon={<SkipForward className="w-4 h-4" />}>
-              Forward
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<Download className="w-3.5 h-3.5" />}
+              onClick={() => alert("Dossier Brief Export initiated...")}
+            >
+              Export Case Dossier
             </Button>
           </div>
         }
       />
 
-      <Panel title="Chronological Investigation Flow (Case Cluster #842)">
-        <div className="relative border-l-2 border-primary/40 ml-4 pl-6 space-y-6 py-2">
-          {[
-            { date: "Day 1 - 14 Jan 2026", title: "Initial Complaint Registered", desc: "Complainant files FIR-2026-00102 at Indiranagar PS regarding night burglary.", icon: FileCheck },
-            { date: "Day 3 - 16 Jan 2026", title: "Second Incident Linked", desc: "Matching MO reported at HSR Layout PS (FIR-2026-00105). Shared vehicle identified.", icon: History },
-            { date: "Day 6 - 19 Jan 2026", title: "Suspect Identified via Network Graph", desc: "Graph engine connects repeat offender Suspect #A-901 based on past arrest record.", icon: Clock },
-            { date: "Day 12 - 25 Jan 2026", title: "Arrest & Chargesheet Submitted", desc: "Arrest executed by Special Task Force. Chargesheet filed in Judicial Court.", icon: FileCheck },
-          ].map((step, idx) => {
-            const Icon = step.icon;
-            return (
-              <div key={idx} className="relative group">
-                <div className="absolute -left-[31px] top-0.5 p-1.5 rounded-full bg-surface border-2 border-primary text-primary shrink-0">
-                  <Icon className="w-3.5 h-3.5" />
-                </div>
-                <div className="p-4 bg-surface/60 rounded-xl border border-border space-y-1">
-                  <div className="text-[11px] font-mono font-semibold text-primary">{step.date}</div>
-                  <h4 className="text-sm font-semibold text-white">{step.title}</h4>
-                  <p className="text-xs text-gray-400 leading-relaxed">{step.desc}</p>
-                </div>
-              </div>
-            );
-          })}
+      {/* Top Case Header Bar */}
+      <CaseHeaderBar />
+
+      {/* Investigation KPI Metrics */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <StatCard
+          title="Case Progress"
+          value="92%"
+          description="Chargesheet Filed"
+          trend={{ value: "8%", direction: "up", label: "completed" }}
+          icon={<FolderCheck className="w-4 h-4 text-primary" />}
+        />
+        <StatCard
+          title="Evidentiary Assets"
+          value="12"
+          description="Verified Records"
+          icon={<FileText className="w-4 h-4 text-accent" />}
+        />
+        <StatCard
+          title="Suspects Identified"
+          value="2"
+          description="Arrested in Custody"
+          icon={<ShieldAlert className="w-4 h-4 text-semantic-danger" />}
+        />
+        <StatCard
+          title="Witness Statements"
+          value="3"
+          description="Sworn Records"
+          icon={<Users className="w-4 h-4 text-semantic-success" />}
+        />
+        <StatCard
+          title="Linked FIR Cases"
+          value="2"
+          description="Indiranagar Ring"
+          icon={<FileText className="w-4 h-4 text-purple-400" />}
+        />
+        <StatCard
+          title="Milestone Events"
+          value="8"
+          description="Replay Sequence"
+          icon={<Clock className="w-4 h-4 text-amber-500" />}
+        />
+      </div>
+
+      {/* 5-Section Workspace Layout */}
+      <div className="flex flex-col lg:flex-row gap-4 items-start relative">
+        {/* Left Case Explorer Sidebar */}
+        <CaseExplorerSidebar
+          selectedCaseId={selectedCase.id}
+          onSelectCase={(c) => setSelectedCase(c)}
+        />
+
+        {/* Center Timeline Replay Workspace */}
+        <div className="flex-1 w-full space-y-4">
+          <HorizontalTimelineReplay />
+          <InvestigationNotesPanel />
         </div>
-      </Panel>
+
+        {/* Right Case Intelligence Panel */}
+        <CaseIntelligencePanel />
+      </div>
+
+      {/* Bottom Evidence Feed Drawer */}
+      <EvidenceFeedDrawer
+        isOpen={evidenceDrawerOpen}
+        onClose={() => setEvidenceDrawerOpen(false)}
+      />
     </div>
   );
 }
