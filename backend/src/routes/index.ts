@@ -4,7 +4,13 @@ import {
   getDashboard,
   getHotspots,
   getNetwork,
+  getNetworkByCaseId,
   getCaseById,
+  getDistricts,
+  getAlerts,
+  getTimelineByCaseId,
+  getStatistics,
+  getTrends,
   queryCopilot,
   createReport,
   getSettings,
@@ -17,17 +23,17 @@ const router = Router();
 // Health Check Endpoint
 router.get("/health", getHealth);
 
-// Dashboard Endpoints
+// REST Analytics APIs
 router.get("/dashboard", auditLoggerMiddleware("VIEW_DASHBOARD"), getDashboard);
-
-// Hotspots Endpoints
 router.get("/hotspots", auditLoggerMiddleware("VIEW_HOTSPOTS"), getHotspots);
-
-// Network Endpoints
 router.get("/network", auditLoggerMiddleware("VIEW_NETWORK"), getNetwork);
-
-// Case Details Endpoint
+router.get("/network/:caseId", auditLoggerMiddleware("VIEW_CASE_NETWORK"), getNetworkByCaseId);
 router.get("/case/:id", auditLoggerMiddleware("VIEW_CASE"), getCaseById);
+router.get("/districts", auditLoggerMiddleware("VIEW_DISTRICTS"), getDistricts);
+router.get("/alerts", auditLoggerMiddleware("VIEW_ALERTS"), getAlerts);
+router.get("/timeline/:caseId", auditLoggerMiddleware("VIEW_TIMELINE"), getTimelineByCaseId);
+router.get("/statistics", auditLoggerMiddleware("VIEW_STATISTICS"), getStatistics);
+router.get("/trends", auditLoggerMiddleware("VIEW_TRENDS"), getTrends);
 
 // Copilot AI Reasoning Endpoint
 router.post(
