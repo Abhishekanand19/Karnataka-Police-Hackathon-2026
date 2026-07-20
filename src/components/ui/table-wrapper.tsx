@@ -26,39 +26,55 @@ export const TableWrapper: React.FC<TableWrapperProps> = ({
 export const TableHeader = ({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <thead className={cn("bg-surface/80 text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-border", className)}>{children}</thead>;
+  ...props
+}: React.HTMLAttributes<HTMLTableSectionElement>) => (
+  <thead
+    className={cn(
+      "bg-surface/80 text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-border",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </thead>
+);
 
 export const TableBody = ({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <tbody className={cn("divide-y divide-border/40", className)}>{children}</tbody>;
+  ...props
+}: React.HTMLAttributes<HTMLTableSectionElement>) => (
+  <tbody className={cn("divide-y divide-border/40", className)} {...props}>
+    {children}
+  </tbody>
+);
 
 export const TableRow = ({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <tr className={cn("hover:bg-surface/40 transition-colors", className)}>{children}</tr>;
+  ...props
+}: React.HTMLAttributes<HTMLTableRowElement>) => (
+  <tr className={cn("hover:bg-surface/40 transition-colors", className)} {...props}>
+    {children}
+  </tr>
+);
 
 export const TableHead = ({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <th className={cn("px-4 py-3.5", className)}>{children}</th>;
+  ...props
+}: React.ThHTMLAttributes<HTMLTableCellElement>) => (
+  <th className={cn("px-4 py-3.5", className)} {...props}>
+    {children}
+  </th>
+);
 
 export const TableCell = ({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <td className={cn("px-4 py-3.5 text-xs text-gray-300", className)}>{children}</td>;
+  ...props
+}: React.TdHTMLAttributes<HTMLTableCellElement>) => (
+  <td className={cn("px-4 py-3.5 text-xs text-gray-300", className)} {...props}>
+    {children}
+  </td>
+);
