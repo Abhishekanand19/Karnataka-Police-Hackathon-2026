@@ -12,6 +12,11 @@ import {
   getStatistics,
   getTrends,
   queryCopilot,
+  getCopilotContext,
+  getCopilotHistory,
+  getCopilotSuggestions,
+  getCopilotSessionById,
+  submitCopilotFeedback,
   createReport,
   getSettings,
 } from "../controllers";
@@ -35,13 +40,18 @@ router.get("/timeline/:caseId", auditLoggerMiddleware("VIEW_TIMELINE"), getTimel
 router.get("/statistics", auditLoggerMiddleware("VIEW_STATISTICS"), getStatistics);
 router.get("/trends", auditLoggerMiddleware("VIEW_TRENDS"), getTrends);
 
-// Copilot AI Reasoning Endpoint
+// AI Copilot REST Endpoints
 router.post(
   "/copilot/query",
   validateInput(CopilotQuerySchema),
   auditLoggerMiddleware("COPILOT_QUERY"),
   queryCopilot
 );
+router.post("/copilot/context", auditLoggerMiddleware("COPILOT_CONTEXT"), getCopilotContext);
+router.get("/copilot/history", auditLoggerMiddleware("COPILOT_HISTORY"), getCopilotHistory);
+router.get("/copilot/suggestions", auditLoggerMiddleware("COPILOT_SUGGESTIONS"), getCopilotSuggestions);
+router.get("/copilot/session/:id", auditLoggerMiddleware("COPILOT_SESSION"), getCopilotSessionById);
+router.post("/copilot/feedback", auditLoggerMiddleware("COPILOT_FEEDBACK"), submitCopilotFeedback);
 
 // Report Generation Endpoint
 router.post(

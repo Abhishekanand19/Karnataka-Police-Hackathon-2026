@@ -4,7 +4,6 @@ import {
   HealthService,
   DashboardService,
   CaseService,
-  CopilotService,
   ReportService,
   SettingsService,
 } from "../services";
@@ -15,11 +14,11 @@ import { RepeatOffenderService } from "../services/repeat-offender.service";
 import { NetworkBuilderService } from "../services/network-builder.service";
 import { AlertEngineService } from "../services/alert-engine.service";
 import { TimelineEngineService } from "../services/timeline-engine.service";
+import { CopilotAIService } from "../services/copilot-ai.service";
 
 const healthService = new HealthService();
 const dashboardService = new DashboardService();
 const caseService = new CaseService();
-const copilotService = new CopilotService();
 const reportService = new ReportService();
 const settingsService = new SettingsService();
 
@@ -30,6 +29,7 @@ const repeatOffenderService = new RepeatOffenderService();
 const networkBuilder = new NetworkBuilderService();
 const alertEngine = new AlertEngineService();
 const timelineEngine = new TimelineEngineService();
+const copilotAIService = new CopilotAIService();
 
 export const getHealth = (_req: Request, res: Response) => {
   const data = healthService.getHealthStatus();
@@ -110,10 +110,39 @@ export const getTrends = (_req: Request, res: Response) => {
   res.json(formatSuccessResponse("Crime trend series payload retrieved", data));
 };
 
-export const queryCopilot = (req: Request, res: Response) => {
-  const { prompt } = req.body;
-  const data = copilotService.processQuery(prompt || "Explain Bengaluru crime surge");
-  res.json(formatSuccessResponse("Copilot reasoning payload generated", data));
+// AI Copilot Controllers
+export const queryCopilot = async (req: Request, res: Response) => {
+  const { prompt, district, caseId } = req.body;
+  const data = await copilotAIService.processQuery(prompt, district, caseId);
+  res.json(formatSuccessResponse("Copilot evidence reasoning generated", data));
+};
+
+export const getCopilotContext = (req: Request, res: Response) => {
+  const { caseId, district } = req.body;
+  const data = { caseId: caseId || "FIR-2026-00491", district: district || "Bengaluru Urban", activeFirsCount: 4 };
+  res.json(formatSuccessResponse("Copilot active context retrieved", data));
+};
+
+export const getCopilotHistory = (_req: Request, res: Response) => {
+  const data = copilotAIService.getHistory();
+  res.json(formatSuccessResponse("Copilot session history retrieved", data));
+};
+
+export const getCopilotSuggestions = (_req: Request, res: Response) => {
+  const data = copilotAIService.getSuggestedPrompts();
+  res.json(formatSuccessResponse("Copilot suggested prompts retrieved", data));
+};
+
+export const getCopilotSessionById = (req: Request, res: Response) => {
+  const paramId = req.params.id;
+  const sessionId = Array.isArray(paramId) ? paramId[0] : paramId || "sess-01";
+  const data = { id: sessionId, title: "Bengaluru Urban Cyber Surge Brief", date: "Today 16:20 IST" };
+  res.json(formatSuccessResponse(`Copilot session payload for ${sessionId} retrieved`, data));
+};
+
+export const submitCopilotFeedback = (req: Request, res: Response) => {
+  const { sessionId, rating, comments } = req.body;
+  res.json(formatSuccessResponse("Copilot feedback recorded", { sessionId, rating: rating || 5, comments: comments || "Accurate evidence citations" }));
 };
 
 export const createReport = (req: Request, res: Response) => {
