@@ -1,89 +1,133 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { Panel } from "@/components/ui/panel";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { GitFork, ZoomIn, ZoomOut, Maximize2, Share2, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import {
+  NetworkGraphCanvas,
+  mockNodes,
+  mockEdges,
+  NetworkNode,
+} from "@/components/network/network-graph-canvas";
+import {
+  NetworkSearchPanel,
+  mockPresets,
+  InvestigationPreset,
+} from "@/components/network/network-search-panel";
+import { EntityIntelligencePanel } from "@/components/network/entity-intelligence-panel";
+import { RelationshipInspectorDrawer } from "@/components/network/relationship-inspector-drawer";
+import { NetworkToolbarControls } from "@/components/network/network-toolbar-controls";
+import { NetworkLegendControl } from "@/components/network/network-legend-control";
+import { GitFork, Sparkles, Plus, RefreshCw, Layers } from "lucide-react";
 
 export default function NetworkPage() {
+  const [activePreset, setActivePreset] = useState<InvestigationPreset | null>(mockPresets[0]);
+  const [selectedNode, setSelectedNode] = useState<NetworkNode | null>(mockNodes[0]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showLabels, setShowLabels] = useState(true);
+
+  const handleStartInvestigation = () => {
+    setActivePreset(mockPresets[0]);
+    setSelectedNode(mockNodes[0]);
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 pb-8 select-none">
+      {/* Page Header */}
       <PageHeader
         title="Criminal Network Investigation Graph"
-        description="Multi-entity relationship engine linking Case FIRs, Accused Persons, Victims, Modus Operandi, Locations, and Vehicles."
-        badge={<Badge variant="accent">Cytoscape.js Engine Ready</Badge>}
+        description="Multi-entity relationship engine linking Case FIRs, Accused Persons, Victims, Modus Operandi, Locations, Vehicles, Shared Phones, and Bank Accounts."
+        badge={
+          <Badge variant="accent">
+            <GitFork className="w-3.5 h-3.5 mr-1" /> Cytoscape.js Engine
+          </Badge>
+        }
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="secondary" icon={<Share2 className="w-4 h-4" />}>
-              Export Graph
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<RefreshCw className="w-3.5 h-3.5" />}
+              onClick={() => {
+                setActivePreset(mockPresets[0]);
+                setSelectedNode(mockNodes[0]);
+              }}
+            >
+              Reset Network View
             </Button>
-            <Button variant="primary" icon={<GitFork className="w-4 h-4" />}>
-              Expand Associates
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<Plus className="w-3.5 h-3.5" />}
+              onClick={handleStartInvestigation}
+            >
+              New Investigation
             </Button>
           </div>
         }
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Graph Canvas Placeholder */}
-        <div className="lg:col-span-3">
-          <Panel title="Interactive Network Graph Canvas" className="min-h-[520px] relative">
-            <div className="h-[490px] bg-surface/80 rounded-xl border border-dashed border-border flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
-              <GitFork className="w-16 h-16 text-accent mb-4" />
-              <h3 className="text-base font-semibold text-white">Cytoscape.js Relationship Graph</h3>
-              <p className="text-xs text-gray-400 max-w-md mt-1 mb-4">
-                Node-edge graph calculations for repeat offenders, shared phone numbers, and modus operandi will be initialized in Phase 5.
-              </p>
+      {/* Top Toolbar Controls */}
+      <NetworkToolbarControls
+        showLabels={showLabels}
+        onToggleLabels={() => setShowLabels(!showLabels)}
+        onReset={() => setSelectedNode(mockNodes[0])}
+      />
 
-              {/* Controls overlay */}
-              <div className="absolute top-4 right-4 flex flex-col gap-1.5 p-1 bg-card border border-border rounded-lg shadow-lg">
-                <button className="p-2 text-gray-400 hover:text-white hover:bg-surface rounded" title="Zoom In">
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-gray-400 hover:text-white hover:bg-surface rounded" title="Zoom Out">
-                  <ZoomOut className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-gray-400 hover:text-white hover:bg-surface rounded" title="Fit Screen">
-                  <Maximize2 className="w-4 h-4" />
-                </button>
-              </div>
+      {!activePreset ? (
+        /* Empty State View */
+        <EmptyState
+          icon={<GitFork className="w-10 h-10 text-primary stroke-[1.5]" />}
+          title="No Active Criminal Network Investigation Selected"
+          description="Select an investigation preset from the left panel or click 'Start Investigation' to initialize the Cytoscape.js relationship engine."
+          actionLabel="Start Investigation"
+          onAction={handleStartInvestigation}
+          className="my-8 py-16"
+        />
+      ) : (
+        /* 4-Quadrant Workspace Layout */
+        <div className="flex flex-col lg:flex-row gap-4 items-start relative">
+          {/* Left Search & Filters Panel */}
+          <NetworkSearchPanel
+            selectedPresetId={activePreset.id}
+            onSelectPreset={(preset) => {
+              setActivePreset(preset);
+              setSelectedNode(mockNodes[0]);
+            }}
+          />
+
+          {/* Center Cytoscape Graph Canvas Area */}
+          <div className="flex-1 w-full relative">
+            <NetworkGraphCanvas
+              selectedNode={selectedNode}
+              onSelectNode={(node) => setSelectedNode(node)}
+              nodes={mockNodes}
+              edges={mockEdges}
+              showLabels={showLabels}
+            />
+
+            {/* Bottom Left Overlay: Legend */}
+            <div className="absolute bottom-4 left-4 z-20 hidden md:block">
+              <NetworkLegendControl />
             </div>
-          </Panel>
+          </div>
+
+          {/* Right Entity Intelligence Panel */}
+          <EntityIntelligencePanel
+            selectedNode={selectedNode}
+            onOpenDrawer={() => setDrawerOpen(true)}
+          />
         </div>
+      )}
 
-        {/* Network Side Panel */}
-        <div className="space-y-4">
-          <Panel title="Entity Inspector">
-            <Input icon={<Search className="w-4 h-4" />} placeholder="Search Accused or Case ID..." />
-            <div className="mt-4 p-3 bg-surface/50 rounded-xl border border-border space-y-2 text-xs">
-              <div className="font-semibold text-white">Selected Node: None</div>
-              <p className="text-gray-400 text-[11px]">
-                Click on any node in the graph viewport to inspect criminal background, linked FIRs, and associate networks.
-              </p>
-            </div>
-          </Panel>
-
-          <Panel title="Node Legend">
-            <div className="space-y-2 text-xs">
-              {[
-                { label: "Accused Person", color: "bg-semantic-danger" },
-                { label: "Case FIR", color: "bg-primary" },
-                { label: "Shared Location", color: "bg-accent" },
-                { label: "Modus Operandi", color: "bg-semantic-warning" },
-                { label: "Police Station", color: "bg-semantic-success" },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center gap-2.5">
-                  <span className={`w-3 h-3 rounded-full ${item.color}`} />
-                  <span className="text-gray-300 font-medium">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </Panel>
-        </div>
-      </div>
+      {/* Bottom Relationship Inspector Drawer */}
+      <RelationshipInspectorDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        node={selectedNode}
+      />
     </div>
   );
 }
