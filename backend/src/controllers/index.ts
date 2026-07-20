@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import { formatSuccessResponse } from "../utils";
+import { formatSuccessResponse, formatErrorResponse } from "../utils";
 import {
-  HealthService,
   DashboardService,
   CaseService,
-  ReportService,
   SettingsService,
 } from "../services";
 import { CrimeStatisticsService } from "../services/crime-statistics.service";
@@ -15,11 +13,14 @@ import { NetworkBuilderService } from "../services/network-builder.service";
 import { AlertEngineService } from "../services/alert-engine.service";
 import { TimelineEngineService } from "../services/timeline-engine.service";
 import { CopilotAIService } from "../services/copilot-ai.service";
+import { CatalystAuthService } from "../auth/auth.service";
+import { SmartBrowzReportGenerator } from "../reports/smartbrowz-report";
+import { StratusStorageService } from "../storage/stratus-storage";
+import { HealthMonitorService } from "../health/health-monitor";
+import { AuditLogger } from "../audit/audit-logger";
 
-const healthService = new HealthService();
 const dashboardService = new DashboardService();
 const caseService = new CaseService();
-const reportService = new ReportService();
 const settingsService = new SettingsService();
 
 const crimeStatsService = new CrimeStatisticsService();
@@ -31,11 +32,53 @@ const alertEngine = new AlertEngineService();
 const timelineEngine = new TimelineEngineService();
 const copilotAIService = new CopilotAIService();
 
+const authService = new CatalystAuthService();
+const reportGenerator = new SmartBrowzReportGenerator();
+const storageService = new StratusStorageService();
+const healthMonitor = new HealthMonitorService();
+
+// Auth Endpoints
+export const loginController = async (req: Request, res: Response) => {
+  const { badgeNumber, secretKey } = req.body;
+  const session = await authService.login(badgeNumber || "KSP-89410", secretKey || "secret");
+  AuditLogger.log(session.name, session.role, "LOGIN", "CatalystAuth", "SUCCESS", req.ip);
+  res.json(formatSuccessResponse("Authentication successful", session));
+};
+
+export const logoutController = (req: Request, res: Response) => {
+  const token = req.headers.authorization?.replace("Bearer ", "") || "";
+  authService.logout(token);
+  AuditLogger.log((req as any).user?.name || "Officer", "Investigator", "LOGOUT", "CatalystAuth", "SUCCESS", req.ip);
+  res.json(formatSuccessResponse("Logged out successfully"));
+};
+
+// Health Monitoring Endpoints
 export const getHealth = (_req: Request, res: Response) => {
-  const data = healthService.getHealthStatus();
+  const data = healthMonitor.getOverallHealth();
   res.json(formatSuccessResponse("CrimeLens AI Backend Service Operational", data));
 };
 
+export const getDatabaseHealth = (_req: Request, res: Response) => {
+  const data = healthMonitor.getDatabaseHealth();
+  res.json(formatSuccessResponse("Catalyst Data Store Health Payload", data));
+};
+
+export const getStorageHealth = (_req: Request, res: Response) => {
+  const data = healthMonitor.getStorageHealth();
+  res.json(formatSuccessResponse("Catalyst Stratus Storage Health Payload", data));
+};
+
+export const getAIHealth = (_req: Request, res: Response) => {
+  const data = healthMonitor.getAIHealth();
+  res.json(formatSuccessResponse("AI Copilot Reasoning Engine Health Payload", data));
+};
+
+export const getSystemHealth = (_req: Request, res: Response) => {
+  const data = healthMonitor.getSystemHealth();
+  res.json(formatSuccessResponse("Enterprise Node.js Runtime Health Payload", data));
+};
+
+// REST Analytics Endpoints
 export const getDashboard = (_req: Request, res: Response) => {
   const stats = crimeStatsService.getOverallStatistics();
   const districts = districtAnalyticsService.getDistrictAnalytics();
@@ -110,7 +153,7 @@ export const getTrends = (_req: Request, res: Response) => {
   res.json(formatSuccessResponse("Crime trend series payload retrieved", data));
 };
 
-// AI Copilot Controllers
+// AI Copilot Endpoints
 export const queryCopilot = async (req: Request, res: Response) => {
   const { prompt, district, caseId } = req.body;
   const data = await copilotAIService.processQuery(prompt, district, caseId);
@@ -145,10 +188,24 @@ export const submitCopilotFeedback = (req: Request, res: Response) => {
   res.json(formatSuccessResponse("Copilot feedback recorded", { sessionId, rating: rating || 5, comments: comments || "Accurate evidence citations" }));
 };
 
-export const createReport = (req: Request, res: Response) => {
-  const { reportType } = req.body;
-  const data = reportService.generateReport(reportType || "Dossier");
-  res.json(formatSuccessResponse("Dossier report payload generated", data));
+// SmartBrowz Report & Stratus Upload Controller
+export const createReport = async (req: Request, res: Response) => {
+  try {
+    const { reportType } = req.body;
+    const reportPayload = reportGenerator.generateReport(reportType || "Dossier");
+    const storageRecord = await storageService.uploadReport(reportPayload.reportId, reportPayload);
+
+    AuditLogger.log("Inspector V. Patil", "Investigator", "GENERATE_REPORT", reportPayload.reportId, "SUCCESS", req.ip);
+
+    res.json(
+      formatSuccessResponse("SmartBrowz Intelligence Dossier generated & uploaded to Stratus Storage", {
+        report: reportPayload,
+        storage: storageRecord,
+      })
+    );
+  } catch (err: any) {
+    res.status(500).json(formatErrorResponse("Report Generation Failed", err.message, 500));
+  }
 };
 
 export const getSettings = (_req: Request, res: Response) => {
