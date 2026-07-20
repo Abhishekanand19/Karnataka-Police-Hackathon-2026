@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   variant?: "primary" | "secondary" | "danger" | "ghost" | "accent";
   size?: "sm" | "md" | "lg";
-  children: React.ReactNode;
+  children?: React.ReactNode;
   icon?: React.ReactNode;
   fullWidth?: boolean;
 }
@@ -60,7 +60,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {icon && <span className="shrink-0">{icon}</span>}
-        <span>{children}</span>
+        {children && <span>{children}</span>}
       </motion.button>
     );
   }

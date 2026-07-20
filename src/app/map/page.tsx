@@ -1,101 +1,102 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { Panel } from "@/components/ui/panel";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { RiskBadge } from "@/components/ui/risk-badge";
-import { MapPin, Layers, Sliders, Play, ShieldAlert } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SpatialMapCanvas, mockHotspots, HotspotPoint } from "@/components/map/spatial-map-canvas";
+import { MapFilterPanel, MapFilterState } from "@/components/map/map-filter-panel";
+import { HotspotIntelligencePanel } from "@/components/map/hotspot-intelligence-panel";
+import { SpatialTimelineSlider } from "@/components/map/spatial-timeline-slider";
+import { LocationIntelligenceDrawer } from "@/components/map/location-intelligence-drawer";
+import { MapSearchBar } from "@/components/map/map-search-bar";
+import { MapLegendControl } from "@/components/map/map-legend-control";
+import { MapPin, Layers, RefreshCw, Sparkles, Filter } from "lucide-react";
 
 export default function MapPage() {
+  const [selectedHotspot, setSelectedHotspot] = useState<HotspotPoint | null>(mockHotspots[0]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mapFilters, setMapFilters] = useState<MapFilterState>({
+    district: "all",
+    policeStation: "all",
+    category: "all",
+    risk: "all",
+    status: "all",
+    dateRange: "30d",
+    heatmapOpacity: 0.8,
+  });
+
+  // Filter hotspots based on selected filters
+  const filteredHotspots = mockHotspots.filter((item) => {
+    if (mapFilters.district !== "all" && item.district !== mapFilters.district) return false;
+    if (mapFilters.risk !== "all" && item.risk !== mapFilters.risk) return false;
+    return true;
+  });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 pb-8 select-none">
+      {/* Page Header */}
       <PageHeader
         title="Hotspot Intelligence & Spatial Analytics"
-        description="Geospatial visualization of crime clusters, district risk indicators, and temporal heatmaps across Karnataka."
-        badge={<Badge variant="info">Mapbox Integration Ready</Badge>}
+        description="Vector geospatial workspace for Karnataka State Police SCRB. Interactive hotspot cluster detection, district boundaries, and density heatmaps."
+        badge={
+          <Badge variant="accent">
+            <Layers className="w-3.5 h-3.5 mr-1" /> Mapbox Vector Layer
+          </Badge>
+        }
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="secondary" icon={<Layers className="w-4 h-4" />}>
-              Map Layers
-            </Button>
-            <Button variant="primary" icon={<Sliders className="w-4 h-4" />}>
-              Filter Clusters
+            <MapSearchBar onSelectResult={(hotspot) => setSelectedHotspot(hotspot)} />
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<RefreshCw className="w-3.5 h-3.5" />}
+              onClick={() => setSelectedHotspot(mockHotspots[0])}
+            >
+              Reset Center
             </Button>
           </div>
         }
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Main Map Canvas Placeholder */}
-        <div className="lg:col-span-3">
-          <Panel title="Interactive Karnataka Geospatial Canvas" className="min-h-[500px]">
-            <div className="relative h-[480px] bg-surface/80 rounded-xl border border-dashed border-border flex flex-col items-center justify-center p-6 text-center overflow-hidden">
-              <MapPin className="w-16 h-16 text-primary mb-4 animate-bounce" />
-              <h3 className="text-base font-semibold text-white">Mapbox GL Spatial Viewport</h3>
-              <p className="text-xs text-gray-400 max-w-md mt-1 mb-6">
-                Vector heatmaps, police station overlays, and district boundaries will be connected in Phase 4. Mapbox GL GL JS is configured.
-              </p>
+      {/* 4-Quadrant Spatial Workspace Layout */}
+      <div className="flex flex-col lg:flex-row gap-4 items-start relative">
+        {/* Left Filter Panel */}
+        <MapFilterPanel onFilterChange={(f) => setMapFilters(f)} />
 
-              {/* Timeline Slider Placeholder */}
-              <div className="absolute bottom-4 left-4 right-4 bg-card/90 backdrop-blur-md p-3 rounded-xl border border-border flex items-center gap-4">
-                <Button variant="secondary" size="sm" icon={<Play className="w-3.5 h-3.5" />}>
-                  Play Timeline
-                </Button>
-                <div className="flex-1 space-y-1">
-                  <div className="flex justify-between text-[11px] text-gray-400 font-mono">
-                    <span>Jan 2023</span>
-                    <span>Current: July 2026</span>
-                    <span>Dec 2026</span>
-                  </div>
-                  <div className="h-2 bg-surface rounded-full overflow-hidden border border-border">
-                    <div className="h-full bg-primary w-3/4 rounded-full" />
-                  </div>
-                </div>
-              </div>
+        {/* Center Spatial Map Area */}
+        <div className="flex-1 w-full space-y-4">
+          <div className="relative">
+            <SpatialMapCanvas
+              selectedHotspot={selectedHotspot}
+              onSelectHotspot={(h) => setSelectedHotspot(h)}
+              filteredHotspots={filteredHotspots}
+              heatmapOpacity={mapFilters.heatmapOpacity}
+            />
+
+            {/* Bottom Left Overlay: Map Legend Control */}
+            <div className="absolute bottom-4 left-4 z-20 hidden md:block">
+              <MapLegendControl />
             </div>
-          </Panel>
+          </div>
+
+          {/* Bottom Spatial Timeline Slider */}
+          <SpatialTimelineSlider />
         </div>
 
-        {/* Right Panel: Hotspot Intelligence Cards */}
-        <div className="space-y-4">
-          <Panel title="Active Cluster Feed">
-            <div className="space-y-3">
-              {[
-                { name: "Indiranagar Cyber Hotspot", district: "Bengaluru Urban", cases: 28, level: "Critical" as const },
-                { name: "Devaraja Market Theft Cluster", district: "Mysuru", cases: 19, level: "High" as const },
-                { name: "Panambur Coast Smuggling Zone", district: "Dakshina Kannada", cases: 14, level: "Medium" as const },
-              ].map((c) => (
-                <div key={c.name} className="p-3 bg-surface/60 rounded-xl border border-border space-y-2">
-                  <div className="flex items-start justify-between">
-                    <h5 className="text-xs font-semibold text-white">{c.name}</h5>
-                    <RiskBadge level={c.level} />
-                  </div>
-                  <div className="text-[11px] text-gray-400">{c.district} • {c.cases} Linked Incidents</div>
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          <Panel title="Station Coverage">
-            <div className="text-xs text-gray-400 space-y-2">
-              <div className="flex justify-between py-1 border-b border-border/40">
-                <span>Active Stations Monitored</span>
-                <span className="font-mono text-white">120</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-border/40">
-                <span>Districts Covered</span>
-                <span className="font-mono text-white">25</span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span>Geospatial Accuracy</span>
-                <span className="font-mono text-semantic-success">High (GPS Coordinates)</span>
-              </div>
-            </div>
-          </Panel>
-        </div>
+        {/* Right Intelligence Panel */}
+        <HotspotIntelligencePanel
+          hotspot={selectedHotspot}
+          onOpenDrawer={() => setDrawerOpen(true)}
+        />
       </div>
+
+      {/* Bottom Location Intelligence Dossier Drawer */}
+      <LocationIntelligenceDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        hotspot={selectedHotspot}
+      />
     </div>
   );
 }
