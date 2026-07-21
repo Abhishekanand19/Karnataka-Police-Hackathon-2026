@@ -32,3 +32,21 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Backend build output
+backend/dist/
+
+# Backend environment file
+backend/.env
+
+# Logs
+logs/
+*.log
+
+# Catalyst
+.catalyst/
+
+backend/dist/
+backend/.env
+.catalyst/
+logs/
+*.log

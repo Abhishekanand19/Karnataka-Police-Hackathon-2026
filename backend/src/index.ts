@@ -5,7 +5,7 @@ import { config } from "./config";
 import { logger } from "./logger";
 import {
   requestLoggerMiddleware,
-  authPlaceholderMiddleware,
+  catalystInitMiddleware,
   globalErrorHandler,
 } from "./middleware";
 import apiRoutes from "./routes";
@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Request Logging & Auth Context
 app.use(requestLoggerMiddleware);
-app.use(authPlaceholderMiddleware);
+app.use(catalystInitMiddleware);
 
 // Mount API Routes
 app.use("/api", apiRoutes);
@@ -30,8 +30,8 @@ app.use(globalErrorHandler);
 
 // Start Server
 if (process.env.NODE_ENV !== "test") {
-  app.listen(config.port, () => {
-    logger.info(`CrimeLens AI Backend Service listening on http://localhost:${config.port}`);
+  app.listen(config.port, "0.0.0.0", () => {
+    logger.info(`CrimeLens AI Backend Service listening on port ${config.port}`);
     logger.info(`Environment: [${config.nodeEnv}] | Catalyst Project: [${config.catalyst.projectId}]`);
   });
 }

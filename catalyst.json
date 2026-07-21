@@ -1,0 +1,11 @@
+{
+  "appsail": [
+    {
+      "source": "backend",
+      "name": "crimelens-backend"
+    }
+  ],
+  "client": {
+    "source": "out"
+  }
+}

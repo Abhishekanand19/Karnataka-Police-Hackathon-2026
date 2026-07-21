@@ -34,7 +34,16 @@ export class CatalystDataStore {
     return CatalystDataStore.instance;
   }
 
-  public async getTableDetails(tableName: string) {
+  public async getTableDetails(tableName: string, catalystApp?: any) {
+    if (catalystApp && catalystApp.datastore) {
+      try {
+        const datastore = catalystApp.datastore();
+        const table = datastore.table(tableName);
+        return { tableName, status: "CONNECTED", datastore: "Zoho Catalyst Data Store", table };
+      } catch (err: any) {
+        return { tableName, status: "READY", datastore: "Zoho Catalyst Data Store (Fallback)" };
+      }
+    }
     return { tableName, status: "READY", datastore: "Zoho Catalyst Data Store" };
   }
 }

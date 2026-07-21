@@ -40,7 +40,8 @@ const healthMonitor = new HealthMonitorService();
 // Auth Endpoints
 export const loginController = async (req: Request, res: Response) => {
   const { badgeNumber, secretKey } = req.body;
-  const session = await authService.login(badgeNumber || "KSP-89410", secretKey || "secret");
+  const catalystApp = res.locals.catalyst;
+  const session = await authService.login(catalystApp, badgeNumber || "KSP-89410", secretKey || "secret");
   AuditLogger.log(session.name, session.role, "LOGIN", "CatalystAuth", "SUCCESS", req.ip);
   res.json(formatSuccessResponse("Authentication successful", session));
 };
@@ -192,8 +193,9 @@ export const submitCopilotFeedback = (req: Request, res: Response) => {
 export const createReport = async (req: Request, res: Response) => {
   try {
     const { reportType } = req.body;
+    const catalystApp = res.locals.catalyst;
     const reportPayload = reportGenerator.generateReport(reportType || "Dossier");
-    const storageRecord = await storageService.uploadReport(reportPayload.reportId, reportPayload);
+    const storageRecord = await storageService.uploadReport(catalystApp, reportPayload.reportId, reportPayload);
 
     AuditLogger.log("Inspector V. Patil", "Investigator", "GENERATE_REPORT", reportPayload.reportId, "SUCCESS", req.ip);
 

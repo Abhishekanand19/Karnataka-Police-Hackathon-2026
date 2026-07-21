@@ -15,7 +15,7 @@ export async function runProductionTests() {
 
   // Test 1: Catalyst Authentication
   const authService = new CatalystAuthService();
-  const session = await authService.login("KSP-89410", "secret");
+  const session = await authService.login(null, "KSP-89410", "secret");
   const validated = authService.validateToken(session.token);
 
   if (!session.token || !validated || validated.badgeNumber !== "KSP-89410") {
@@ -44,7 +44,7 @@ export async function runProductionTests() {
 
   // Test 4: Stratus Storage
   const storageService = new StratusStorageService();
-  const storageRecord = await storageService.uploadReport(report.reportId, report);
+  const storageRecord = await storageService.uploadReport(null, report.reportId, report);
   if (!storageRecord.downloadUrl || storageRecord.sizeBytes === 0) {
     console.error("❌ TEST 4 FAILED: Stratus storage upload failed.", storageRecord);
     process.exit(1);

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { logger } from "../logger";
 import { formatErrorResponse } from "../utils";
 import { ZodSchema } from "zod";
+import catalyst from "zcatalyst-sdk-node";
 
 export const requestLoggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
@@ -26,14 +27,13 @@ export const validateInput = (schema: ZodSchema) => {
   };
 };
 
-export const authPlaceholderMiddleware = (req: Request, _res: Response, next: NextFunction) => {
-  // Authentication Placeholder Middleware
-  (req as any).user = {
-    id: "usr_patil_894",
-    name: "Inspector V. Patil",
-    role: "Investigator",
-    district: "Bengaluru Urban",
-  };
+export const catalystInitMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.locals.catalyst = catalyst.initialize(req as any);
+  } catch (err: any) {
+    logger.debug(`Catalyst Initialization Notice: ${err.message}`);
+    res.locals.catalyst = null;
+  }
   next();
 };
 

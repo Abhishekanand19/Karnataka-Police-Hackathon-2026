@@ -15,7 +15,9 @@ export interface AuthSession {
 export class CatalystAuthService {
   private activeSessions: Map<string, AuthSession> = new Map();
 
-  public async login(badgeNumber: string, _secretKey: string): Promise<AuthSession> {
+  public async login(_catalystApp: any, badgeNumber: string, _secretKey: string): Promise<AuthSession> {
+    // Ideally this would interact with catalystApp.userManagement() or similar.
+    // We are setting up the structure for it to use the SDK.
     const token = `cat_token_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
     const session: AuthSession = {
       token,

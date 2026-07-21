@@ -1,0 +1,13 @@
+{
+  "command": "node dist/index.js",
+  "stack": "node18",
+  "build": [
+    "npm install",
+    "npm run build"
+  ],
+  "env_variables": {
+    "NODE_ENV": "production",
+    "CATALYST_PROJECT_ID": "54256000000013048",
+    "CATALYST_ENVIRONMENT": "development"
+  }
+}
