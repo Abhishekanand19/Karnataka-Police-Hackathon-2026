@@ -1,11 +1,12 @@
 {
   "appsail": [
     {
-      "source": "backend",
-      "name": "crimelens-backend"
+      "name": "crimelens-backend",
+      "source": "backend"
     }
   ],
   "client": {
+    "name": "crimelens-frontend",
     "source": "out"
   }
 }

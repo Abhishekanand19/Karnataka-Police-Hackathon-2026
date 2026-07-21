@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node -e \"require('fs').writeFileSync('out/client-package.json', JSON.stringify({name: 'crimelens-frontend', version: '1.0.0', homepage: 'index.html'}, null, 2))\"",
     "start": "next start",
     "lint": "next lint"
   },
