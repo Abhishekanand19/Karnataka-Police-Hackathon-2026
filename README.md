@@ -1,94 +1,236 @@
-# CrimeLens AI 🚔
+<!-- Hero Banner Placeholder -->
+<div align="center">
+  <img src="docs/assets/hero-banner.png" alt="CrimeLens AI Hero Banner" width="100%" />
 
-> **Karnataka State Police (KSP) Hackathon 2026 Submission**
-> 
-> *A unified, AI-powered Crime Intelligence & Decision Support Platform designed to eliminate data silos and accelerate investigative workflows.*
+  <h1>🚨 CrimeLens AI</h1>
+  <p><b>AI-Driven Crime Analytics & Intelligence Platform</b></p>
+  <p><i>Built for the Karnataka State Police (KSP) Hackathon 2026</i></p>
+
+<!-- Technology Badges -->
+<p>
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/Zoho_Catalyst-10b981?style=for-the-badge&logo=zoho&logoColor=white" alt="Zoho Catalyst" />
+</p>
+
+<!-- Demo GIF Placeholder -->
+<img src="docs/assets/demo.gif" alt="CrimeLens AI Demo" width="800" />
+</div>
+
+<br />
+
+> 🎥 **Watch the Full Demo on YouTube:** [CrimeLens AI Showcase](https://www.youtube.com/watch?v=lTZSI8-1KpM)
+>
+> 🚀 **Live Deployment:** [Test the Platform Here](https://ksp-crimelens-2026-60079412118.development.catalystserverless.in/app/login/)
 
 ---
 
-## 🛑 The Problem: Fragmented Intelligence
-Modern police forces face a critical data bottleneck. Investigative records, suspect networks, forensic evidence, and geospatial hotspots are often scattered across isolated Excel sheets, disconnected databases, and paper files. 
+## 📖 Prototype Brief
 
-When a critical incident occurs, officers waste precious time manually cross-referencing information rather than acting on actionable intelligence.
-
-## 🌟 The Solution: CrimeLens AI
-**CrimeLens AI** is a production-ready, centralized investigation platform that replaces fragmented tools with a single unified interface. By establishing an `Active Investigation Context` that persists across the entire system, officers can seamlessly transition from high-level hotspot analysis to deep-dive criminal network graphing without ever losing context of the active case.
+**CrimeLens AI** is an enterprise-grade, intelligence-driven investigation platform designed exclusively for law enforcement agencies. Built during the KSP Hackathon 2026, it unifies fragmented crime data, visualizes complex criminal networks, maps spatial hotspots, and leverages AI to accelerate the investigative workflow. 
 
 ---
 
-## 🚀 Core Modules (The 6 Pillars of Intelligence)
+## 🛑 The Problem Statement
 
-### 1. Investigation Command Centre (Dashboard)
-A dynamic, real-time command dashboard that automatically pulls KPIs, predictive risk scores, and AI summaries based strictly on the current active FIR. 
+Modern policing faces a massive data overload. Investigators often have to jump between isolated databases, static spreadsheets, and physical files to piece together a case. 
+- **Fragmented Data:** Hard to connect suspects across different FIRs and jurisdictions.
+- **Hidden Networks:** Syndicates and organized crime rings hide in the noise.
+- **Time-Intensive:** Parsing through timelines, witness statements, and evidence takes hundreds of man-hours.
+- **Reactive vs. Proactive:** Traditional tools tell you what happened, not what might happen next.
 
-### 2. Statewide Operations Map (Spatial Intelligence)
-A spatial analytics engine visualizing crime density across Karnataka. Officers can drill down from state-level hotspots to specific district nodes, automatically loading the highest-risk FIRs in that sector.
+---
 
-### 3. Criminal Network Graph (Relationship Engine)
-Powered by `Cytoscape.js`, this module visually maps the hidden connections between suspects, victims, vehicles, bank accounts, and phone numbers. It reveals syndicate structures that are impossible to detect in tabular formats.
+## 💡 Our Solution
 
-### 4. Investigation Replay Engine (Timeline)
-Reconstructs the complete lifecycle of a crime. Officers can hit "Play" to watch the chronological evolution of the case from initial complaint to physical evidence recovery, augmented with AI insights for every event.
+CrimeLens AI transforms reactive data retrieval into **proactive intelligence**. By loading an FIR context into a unified workspace, officers get instant access to automated insights, spatial mapping, relationship graphs, and a conversational AI copilot that acts as a digital detective.
 
-### 5. AI Investigator Copilot (Decision Support)
-Not just a generic chatbot. The Copilot is inherently aware of the active investigation, evidence, and suspect profiles. It analyzes raw case facts and provides highly structured, actionable recommendations (e.g., *“Cross-reference seized laptops with Cyber Cell hash database”*).
+---
 
-### 6. Official Intelligence Reports (Document Generation)
-A robust document compilation engine that transforms raw database entries into formatted, printable A4 intelligence dossiers. Includes mock digital security features (SHA-256 hashes, watermarks, and QR verification codes).
+## ⚡ Why CrimeLens?
+
+How do we differ from traditional investigation software? 
+
+| Feature | Traditional Systems 📉 | CrimeLens AI 🚀 |
+|---------|-----------------------|-----------------|
+| **Data Analysis** | Manual reading and correlation. | AI-driven summarization and entity extraction. |
+| **Relationships** | Static tables and lists. | Interactive Force-Directed Network Graphs. |
+| **Geospatial** | Static pins on a map. | Live clustering and dynamic hotspot density mapping. |
+| **Insights** | Requires query expertise. | Natural language AI Copilot chat interface. |
+| **Reporting** | Manual document formatting. | One-click intelligence brief generation. |
+
+---
+
+## ✨ Key Highlights / Features
+
+<details>
+<summary><b>1. Interactive Investigation Workspace & Dashboard</b></summary>
+Secure, role-based access that provides a centralized view of case metrics, critical alerts, suspect profiles, and dynamically generated recommendations.
+</details>
+
+<details>
+<summary><b>2. Spatial Hotspot Mapping</b></summary>
+An interactive GIS visualization interface to identify crime clusters and geographic patterns, helping deploy patrol units effectively.
+</details>
+
+<details>
+<summary><b>3. Criminal Network Discovery (Force Graph)</b></summary>
+Visually maps out relationships between suspects, victims, locations, and organizations to expose hidden syndicates.
+</details>
+
+<details>
+<summary><b>4. Explainable AI Copilot</b></summary>
+A context-aware chat assistant that reads FIR details and answers natural language questions, automatically formatting structured responses.
+</details>
+
+<details>
+<summary><b>5. Timeline Replay & Chronological Analysis</b></summary>
+An interactive timeline that scrubs through events to help investigators visualize the exact sequence of a crime.
+</details>
+
+<details>
+<summary><b>6. Automated Intelligence Reports</b></summary>
+Compiles summaries, networks, and spatial data into standardized, exportable intelligence briefs ready for senior command.
+</details>
+
+---
+
+## 🖼️ Platform Screenshots Gallery
+
+<div align="center">
+  
+| Operational Dashboard | Criminal Network Graph |
+|:---:|:---:|
+| <img src="docs/assets/screenshot-dashboard.png" width="400" alt="Dashboard" /> | <img src="docs/assets/screenshot-network.png" width="400" alt="Network Graph" /> |
+| *Real-time metrics and AI recommendations* | *Visualizing hidden syndicates and connections* |
+
+| AI Copilot & Map | Timeline Replay |
+|:---:|:---:|
+| <img src="docs/assets/screenshot-copilot.png" width="400" alt="Copilot" /> | <img src="docs/assets/screenshot-timeline.png" width="400" alt="Timeline" /> |
+| *Context-aware natural language assistance* | *Scrubbing through chronological case events* |
+
+</div>
+
+---
+
+## 🎯 Golden Demo Workflow
+
+Want to test the platform yourself? Follow this standard investigation flow:
+1. **Login:** Access the system as a verified officer.
+2. **Select FIR:** Choose an active case (e.g., *FIR-2026-00491: Cyber Fraud*).
+3. **Review Dashboard:** Check the automated risk score and recommended next steps.
+4. **Explore the Network:** Jump into the Network Graph to find common associates linked to the primary suspect.
+5. **Ask the Copilot:** Ask the AI, *"Summarize the suspect's background"* or *"What are the missing links?"*.
+6. **Generate Report:** Export the aggregated findings to an Intelligence Brief.
+
+---
+
+## 📊 Benchmarks & Impact
+
+- ⏱️ **Investigation Speed:** Reduces case context compilation from hours to seconds.
+- 🧠 **Centralized Intelligence:** Merges spatial, temporal, and relational data into one pane of glass.
+- 🤖 **AI Assistance:** Eliminates manual reading of massive FIR documents via semantic summarization.
+- 📈 **Visualization:** Instantly translates raw databases into actionable visual nodes and geographic hotspots.
+- 📑 **Reporting:** Streamlines administrative overhead with one-click report generation.
 
 ---
 
 ## 🛠️ Technology Stack
-- **Frontend Framework**: Next.js 14 (App Router)
-- **UI Library**: React 18
-- **Styling**: Tailwind CSS (Custom Dark Mode "Command Centre" Aesthetic)
-- **Graph Visualization**: Cytoscape.js
-- **Icons**: Lucide React
-- **Animations**: Framer Motion
-- **State Management**: React Context (`InvestigationProvider` with Session Persistence)
+
+- **Frontend Core:** Next.js 14 (App Router, Static Export), React, TypeScript
+- **Styling & UI:** Tailwind CSS, Framer Motion, Lucide Icons, Shadcn UI
+- **Geospatial Mapping:** React Leaflet, Leaflet.js
+- **Data Visualization:** Recharts, React Force Graph
+- **Backend Infrastructure:** Zoho Catalyst AppSail (Node.js/Express)
+- **Deployment:** Zoho Catalyst Serverless Web Hosting
 
 ---
 
-## 🚦 Running the Application Locally
+## 🏗️ Project Architecture
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-org/KSP-Hackathon-2026.git
-   cd KSP-Hackathon-2026
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the Development Server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Access the Platform**
-   Navigate to `http://localhost:3000` in your browser. 
-   *(Use any badge ID from the mock database, e.g., `VP-7842`, to log in).*
+<div align="center">
+  <img src="docs/assets/architecture-diagram.png" alt="Architecture Diagram Placeholder" width="800" />
+  <p><i>High-level flow from the React Client to the Zoho Catalyst AppSail Backend.</i></p>
+</div>
 
 ---
 
-## 🔍 The "Golden Demo" Workflow
-For hackathon judges reviewing this project, we recommend the following end-to-end flow to experience the unified architecture:
+## 🚀 Getting Started
 
-1. **Login**: Authenticate as an officer.
-2. **Global Search**: Press `Ctrl+K` and search for "Vikram". Select the suspect to instantly load the associated high-risk FIR.
-3. **Dashboard**: Observe how the AI summary and recommended actions are tailored to the loaded case.
-4. **Network**: Navigate to the Network tab to visualize Vikram's connections to other syndicates.
-5. **Timeline**: Navigate to the Timeline tab and press "Play" to watch the investigation unfold.
-6. **Reports**: Finally, navigate to Reports, toggle on "AI Analysis" and "Network Data", and generate a printable PDF brief for the Superintendent.
+To run this project locally for development or testing:
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Abhishekanand19/Karnataka-Police-Hackathon-2026.git
+cd Karnataka-Police-Hackathon-2026
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Run the Development Server
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
 ---
 
-## 🔮 Future Scope & Known Limitations
-- **Backend Integration**: Currently runs on a sophisticated `MOCK_DB` to guarantee demo stability. Ready to be wired into a PostgreSQL/Catalyst backend via REST APIs.
-- **Real-Time WebSockets**: Future iterations will feature live incident streaming from dispatch directly into the Map view.
-- **Actual PDF Export**: Currently relies on browser native `window.print()` with CSS `@media print` rules. Can be upgraded to headless puppeteer or SmartBrowz for automated batch generation.
+## 📁 Repository Structure
+
+```text
+├── src/
+│   ├── app/                # Next.js App Router pages
+│   ├── components/         # Reusable React components (Dashboard, Map, AI, etc.)
+│   ├── lib/                # Utilities and synthetic database schemas
+│   └── providers/          # React Context providers (Investigation State)
+├── backend/                # Node.js backend for Zoho Catalyst AppSail
+├── public/                 # Static assets
+└── next.config.mjs         # Next.js configuration
+```
 
 ---
-*Built with ❤️ for the Karnataka State Police Hackathon 2026.*
+
+## 🔮 Future Scope
+
+- **Integration with Real Data:** Connect the prototype's mocked endpoints to live Karnataka Police SCRB databases.
+- **Advanced Real-Time NLP:** Implement Zoho Catalyst SmartAI for advanced anomaly detection and entity extraction.
+- **Geospatial Expansion:** Integrate live dispatch data for real-time patrol deployment suggestions.
+- **Catalyst Relational Data Store:** Migrate local mock data to robust CloudSQL databases.
+
+---
+
+## 🌍 Real-World Applications
+
+While built for the KSP Hackathon, **CrimeLens AI** is designed to scale across any modern law enforcement agency, intelligence bureau, or financial fraud investigation unit requiring rapid correlation of disconnected datasets.
+
+---
+
+## 👨‍💻 Team Zero Plus
+
+Built with ❤️ by **Team Zero Plus**:
+- **Abhishek Anand**
+- **Ashlesh P**
+
+---
+
+## 🙌 Acknowledgements
+
+Special thanks to the **Karnataka State Police** and the organizers of the **KSP Hackathon 2026** for providing the opportunity and problem statements to innovate in the public safety space.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+  <b>If you like this project, please consider giving it a ⭐!</b>
+</div>
