@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Search,
   Command,
@@ -17,12 +17,15 @@ import {
   Settings,
   ArrowRight,
   Sparkles,
+  User
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { MOCK_DB } from "@/lib/mock-database";
+import { useInvestigation } from "@/providers/investigation-provider";
 
 export interface CommandItem {
   id: string;
-  category: "Navigation" | "Cases" | "Districts" | "Stations" | "Actions";
+  category: "Navigation" | "Cases" | "Districts" | "Stations" | "Suspects" | "Actions";
   title: string;
   subtitle?: string;
   icon: React.ElementType;
@@ -38,6 +41,7 @@ export interface CommandPaletteProps {
 export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const { setInvestigation } = useInvestigation();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -61,22 +65,88 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     onClose();
   };
 
-  const commands: CommandItem[] = [
+  const loadCase = (firId: string) => {
+    setInvestigation("FIR", "FIR", firId);
+    router.push("/");
+    onClose();
+  };
+
+  // Static Navigation Links
+  const navCommands: CommandItem[] = [
     { id: "nav-dash", category: "Navigation", title: "Crime Intelligence Dashboard", subtitle: "Overview KPIs & statewide analytics", icon: Layers, action: () => navigate("/") },
     { id: "nav-map", category: "Navigation", title: "Karnataka Spatial Crime Map", subtitle: "Mapbox heatmap & hotspot density", icon: MapPin, action: () => navigate("/map") },
     { id: "nav-net", category: "Navigation", title: "Criminal Network Investigation Graph", subtitle: "Cytoscape.js relationship engine", icon: GitFork, action: () => navigate("/network") },
     { id: "nav-cop", category: "Navigation", title: "AI Investigator Copilot Workspace", subtitle: "Decision support & evidence reasoning", icon: Bot, action: () => navigate("/copilot") },
     { id: "nav-time", category: "Navigation", title: "Investigation Timeline & Case Replay", subtitle: "Chronological incident story", icon: Clock, action: () => navigate("/timeline") },
+    { id: "nav-rep", category: "Navigation", title: "Intelligence Reports", subtitle: "Official Document Generation", icon: FileText, action: () => navigate("/reports") },
     { id: "nav-set", category: "Navigation", title: "System Preferences & Settings", subtitle: "Theme, Command mode & credentials", icon: Settings, action: () => navigate("/settings") },
-    { id: "case-491", category: "Cases", title: "FIR-2026-00491", subtitle: "₹4.2L Cyber Phishing Scam • HSR Layout PS", icon: FileText, action: () => navigate("/timeline"), badge: "Critical" },
-    { id: "case-488", category: "Cases", title: "FIR-2026-00488", subtitle: "Indiranagar Night Property Burglary", icon: FileText, action: () => navigate("/timeline"), badge: "High" },
-    { id: "dist-blr", category: "Districts", title: "Bengaluru Urban District", subtitle: "Risk Score: 89 (Critical) • 1,420 Crimes", icon: MapPin, action: () => navigate("/map"), badge: "Critical" },
-    { id: "dist-mys", category: "Districts", title: "Mysuru City District", subtitle: "Risk Score: 62 (Medium) • 640 Crimes", icon: MapPin, action: () => navigate("/map"), badge: "Medium" },
-    { id: "ps-hsr", category: "Stations", title: "HSR Layout Police Station", subtitle: "Sector 2 Crime Control Command", icon: Shield, action: () => navigate("/map") },
-    { id: "ps-ind", category: "Stations", title: "Indiranagar Police Station", subtitle: "Sector 3 Burglary Squad", icon: Shield, action: () => navigate("/map") },
   ];
 
-  const filtered = commands.filter(
+  // Dynamic Case Links from MOCK_DB
+  const caseCommands: CommandItem[] = MOCK_DB.firs.map(fir => ({
+    id: fir.id,
+    category: "Cases",
+    title: `${fir.firNumber} (${fir.id})`,
+    subtitle: `${fir.category} • ${fir.station}, ${fir.district}`,
+    icon: FileText,
+    action: () => loadCase(fir.firNumber),
+    badge: fir.riskScore > 80 ? "Critical" : fir.riskScore > 50 ? "High" : undefined
+  }));
+
+  // Dynamic Suspect Links
+  const suspectCommands: CommandItem[] = MOCK_DB.suspects.map(suspect => ({
+    id: suspect.id,
+    category: "Suspects",
+    title: `${suspect.name} (${suspect.id})`,
+    subtitle: `Alias: ${suspect.alias || 'None'} • Risk: ${suspect.riskScore} • ${suspect.status}`,
+    icon: User,
+    action: () => {
+      const relatedFir = MOCK_DB.firs.find(f => f.linkedSuspects.includes(suspect.id)) || MOCK_DB.firs[0];
+      loadCase(relatedFir.firNumber);
+    },
+    badge: suspect.riskScore > 80 ? "Critical" : undefined
+  }));
+
+  // Dynamic Victim Links
+  const victimCommands: CommandItem[] = (MOCK_DB.victims || []).slice(0, 50).map(v => ({
+    id: v.id,
+    category: "Victims" as any,
+    title: `Victim: ${v.name}`,
+    subtitle: `Case: ${v.firId} • District: ${v.district}`,
+    icon: User,
+    action: () => loadCase(v.firId)
+  }));
+
+  // Dynamic Vehicle Links
+  const vehicleCommands: CommandItem[] = (MOCK_DB.vehicles || []).slice(0, 50).map(v => ({
+    id: v.id,
+    category: "Vehicles" as any,
+    title: `Vehicle: ${v.plateNumber}`,
+    subtitle: `${v.model} (${v.color}) • Owner: ${v.ownerName} • FIR: ${v.firId}`,
+    icon: Shield,
+    action: () => loadCase(v.firId)
+  }));
+
+  // Dynamic Phone Links
+  const phoneCommands: CommandItem[] = (MOCK_DB.phoneRecords || []).slice(0, 50).map(p => ({
+    id: p.id,
+    category: "Phones" as any,
+    title: `Phone CDR: ${p.phoneNumber}`,
+    subtitle: `Subscriber: ${p.subscriberName} (${p.carrier}) • FIR: ${p.firId}`,
+    icon: Command,
+    action: () => loadCase(p.firId)
+  }));
+
+  const allCommands = [
+    ...navCommands,
+    ...caseCommands,
+    ...suspectCommands,
+    ...victimCommands,
+    ...vehicleCommands,
+    ...phoneCommands
+  ];
+
+  const filtered = allCommands.filter(
     (c) =>
       c.title.toLowerCase().includes(query.toLowerCase()) ||
       (c.subtitle && c.subtitle.toLowerCase().includes(query.toLowerCase())) ||
@@ -99,7 +169,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search cases, districts, police stations, or type commands..."
+            placeholder="Search cases, suspects, or type commands..."
             className="w-full bg-transparent text-white placeholder-gray-500 text-sm focus:outline-none font-medium"
           />
           <button
@@ -119,7 +189,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
               <div className="text-[11px]">Try searching for &quot;Bengaluru&quot;, &quot;FIR-2026-00491&quot;, or &quot;Network&quot;.</div>
             </div>
           ) : (
-            ["Navigation", "Cases", "Districts", "Stations"].map((cat) => {
+            ["Navigation", "Cases", "Suspects", "Victims", "Vehicles", "Phones", "Districts", "Stations"].map((cat) => {
               const items = filtered.filter((c) => c.category === cat);
               if (items.length === 0) return null;
               return (
