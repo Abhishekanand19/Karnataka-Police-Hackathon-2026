@@ -1,102 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
-import { PageHeader } from "@/components/ui/page-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { SpatialMapCanvas, mockHotspots, HotspotPoint } from "@/components/map/spatial-map-canvas";
-import { MapFilterPanel, MapFilterState } from "@/components/map/map-filter-panel";
-import { HotspotIntelligencePanel } from "@/components/map/hotspot-intelligence-panel";
-import { SpatialTimelineSlider } from "@/components/map/spatial-timeline-slider";
-import { LocationIntelligenceDrawer } from "@/components/map/location-intelligence-drawer";
-import { MapSearchBar } from "@/components/map/map-search-bar";
-import { MapLegendControl } from "@/components/map/map-legend-control";
-import { MapPin, Layers, RefreshCw, Sparkles, Filter } from "lucide-react";
+import React, { useMemo } from "react";
+import Link from "next/link";
+import { Activity, ChevronRight, Target } from "lucide-react";
+import { MOCK_DB } from "@/lib/mock-database";
+import { useInvestigation } from "@/providers/investigation-provider";
+import { InvestigationMap, InvestigationMarker } from "@/components/map/investigation-map";
+import { OperationsIntelligencePanel } from "@/components/operations-map/operations-intelligence-panel";
 
-export default function MapPage() {
-  const [selectedHotspot, setSelectedHotspot] = useState<HotspotPoint | null>(mockHotspots[0]);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [mapFilters, setMapFilters] = useState<MapFilterState>({
-    district: "all",
-    policeStation: "all",
-    category: "all",
-    risk: "all",
-    status: "all",
-    dateRange: "30d",
-    heatmapOpacity: 0.8,
-  });
+const offset = (index: number) => ({ lat: ((index * 37) % 13 - 6) * 0.0021, lng: ((index * 53) % 15 - 7) * 0.0025 });
 
-  // Filter hotspots based on selected filters
-  const filteredHotspots = mockHotspots.filter((item) => {
-    if (mapFilters.district !== "all" && item.district !== mapFilters.district) return false;
-    if (mapFilters.risk !== "all" && item.risk !== mapFilters.risk) return false;
-    return true;
-  });
+export default function OperationsMapPage() {
+  const { activeFir } = useInvestigation();
+  const markers = useMemo<InvestigationMarker[]>(() => {
+    if (!activeFir) return [];
+    const hotspot = MOCK_DB.hotspots.find(item => item.policeStation === activeFir.station) || MOCK_DB.hotspots.find(item => item.district === activeFir.district) || MOCK_DB.hotspots[0];
+    const point = (id: string, name: string, relation: InvestigationMarker["kind"], label: string, index: number): InvestigationMarker => { const delta = offset(index); return { id, name, relation: label, kind: relation, timestamp: activeFir.date, lng: hotspot.lng + delta.lng, lat: hotspot.lat + delta.lat }; };
+    const linkedSuspects = MOCK_DB.suspects.filter(suspect => activeFir.linkedSuspects.includes(suspect.id));
+    const result: InvestigationMarker[] = [
+      { id: activeFir.id, name: activeFir.firNumber, relation: "Active FIR location", kind: "fir", timestamp: activeFir.date, lng: hotspot.lng, lat: hotspot.lat },
+      point(`station-${activeFir.id}`, activeFir.station, "station", "Police station", 1),
+      point(`scene-${activeFir.id}`, `${activeFir.district} crime scene`, "scene", "Crime scene", 2),
+    ];
+    MOCK_DB.victims.filter(item => item.firId === activeFir.firNumber).forEach((item, index) => result.push(point(item.id, item.name, "victim", "Victim address", 3 + index)));
+    linkedSuspects.forEach((item, index) => result.push(point(item.id, item.name, "suspect", "Suspect-linked location", 5 + index)));
+    MOCK_DB.vehicles.filter(item => item.firId === activeFir.firNumber).forEach((item, index) => result.push(point(item.id, item.plateNumber, "vehicle", "Vehicle sighting", 10 + index)));
+    MOCK_DB.phoneRecords.filter(item => item.firId === activeFir.firNumber).forEach((item, index) => result.push(point(item.id, item.phoneNumber, "phone", "Phone tower ping", 14 + index)));
+    const cctvEvidence = MOCK_DB.evidence.filter(item => item.firId === activeFir.firNumber && /CCTV/i.test(item.type)).slice(0, 2);
+    (cctvEvidence.length ? cctvEvidence : [{ id: `cctv-${activeFir.id}`, title: "CCTV coverage point" }]).forEach((item, index) => result.push(point(item.id, item.title, "cctv", "CCTV evidence location", 18 + index)));
+    MOCK_DB.firs.filter(item => item.id !== activeFir.id && item.district === activeFir.district && item.category === activeFir.category).slice(0, 3).forEach((item, index) => result.push(point(item.id, item.firNumber, "related", "Nearby linked FIR", 21 + index)));
+    return result;
+  }, [activeFir]);
+  const patrolRadiusKm = Math.max(1.2, Math.min(4.5, 1.2 + markers.length * 0.16));
+  const relatedCount = markers.filter(marker => marker.kind === "related").length;
+  const suspectCount = markers.filter(marker => marker.kind === "suspect").length;
 
-  return (
-    <div className="space-y-4 pb-8 select-none">
-      {/* Page Header */}
-      <PageHeader
-        title="Hotspot Intelligence & Spatial Analytics"
-        description="Vector geospatial workspace for Karnataka State Police SCRB. Interactive hotspot cluster detection, district boundaries, and density heatmaps."
-        badge={
-          <Badge variant="accent">
-            <Layers className="w-3.5 h-3.5 mr-1" /> Mapbox Vector Layer
-          </Badge>
-        }
-        actions={
-          <div className="flex items-center gap-2">
-            <MapSearchBar onSelectResult={(hotspot) => setSelectedHotspot(hotspot)} />
-            <Button
-              variant="secondary"
-              size="sm"
-              icon={<RefreshCw className="w-3.5 h-3.5" />}
-              onClick={() => setSelectedHotspot(mockHotspots[0])}
-            >
-              Reset Center
-            </Button>
-          </div>
-        }
-      />
+  if (!activeFir) return <div className="flex h-full w-full flex-col items-center justify-center bg-[#030407] text-white"><Target className="mb-4 h-16 w-16 text-gray-700" /><h2 className="mb-2 text-xl font-bold">No Active Investigation</h2><p className="mb-6 max-w-md text-center text-gray-400">Select an FIR from the workspace to view its investigation area.</p><Link href="/workspace" className="rounded-lg bg-primary px-6 py-2 font-bold">Go to Workspace</Link></div>;
 
-      {/* 4-Quadrant Spatial Workspace Layout */}
-      <div className="flex flex-col lg:flex-row gap-4 items-start relative">
-        {/* Left Filter Panel */}
-        <MapFilterPanel onFilterChange={(f) => setMapFilters(f)} />
-
-        {/* Center Spatial Map Area */}
-        <div className="flex-1 w-full space-y-4">
-          <div className="relative">
-            <SpatialMapCanvas
-              selectedHotspot={selectedHotspot}
-              onSelectHotspot={(h) => setSelectedHotspot(h)}
-              filteredHotspots={filteredHotspots}
-              heatmapOpacity={mapFilters.heatmapOpacity}
-            />
-
-            {/* Bottom Left Overlay: Map Legend Control */}
-            <div className="absolute bottom-4 left-4 z-20 hidden md:block">
-              <MapLegendControl />
-            </div>
-          </div>
-
-          {/* Bottom Spatial Timeline Slider */}
-          <SpatialTimelineSlider />
-        </div>
-
-        {/* Right Intelligence Panel */}
-        <HotspotIntelligencePanel
-          hotspot={selectedHotspot}
-          onOpenDrawer={() => setDrawerOpen(true)}
-        />
-      </div>
-
-      {/* Bottom Location Intelligence Dossier Drawer */}
-      <LocationIntelligenceDrawer
-        isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        hotspot={selectedHotspot}
-      />
-    </div>
-  );
+  return <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#030407]">
+    <header className="flex shrink-0 items-center justify-between border-b border-border/70 bg-surface px-6 py-3">
+      <div className="flex items-center gap-3 text-sm"><Link href="/dashboard" className="font-semibold text-gray-400 hover:text-white">Dashboard</Link><ChevronRight className="h-4 w-4 text-gray-600" /><span className="font-semibold text-gray-300">Investigation Map</span><ChevronRight className="h-4 w-4 text-gray-600" /><span className="flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1 font-bold text-primary"><Activity className="h-4 w-4" />{activeFir.firNumber}</span></div>
+      <div className="text-sm text-gray-300">{activeFir.station} · {activeFir.district}</div>
+    </header>
+    <main className="relative min-h-[620px] flex-1"><InvestigationMap markers={markers} activeFirNumber={activeFir.firNumber} patrolRadiusKm={patrolRadiusKm} /><aside className="absolute right-5 top-5 bottom-5 z-20 w-[340px]"><OperationsIntelligencePanel activeFir={activeFir} nearbyCases={relatedCount} activeSuspects={suspectCount} patrolRadiusKm={patrolRadiusKm} /></aside></main>
+  </div>;
 }
