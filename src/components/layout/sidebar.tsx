@@ -16,9 +16,11 @@ import {
   ChevronRight,
   Shield,
   UserCheck,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useInvestigation } from "@/providers/investigation-provider";
 
 export interface NavItem {
   name: string;
@@ -39,6 +41,7 @@ const navItems: NavItem[] = [
 export const Sidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const { officer, logout } = useInvestigation();
 
   return (
     <motion.aside
@@ -83,7 +86,9 @@ export const Sidebar: React.FC = () => {
       {/* Main Navigation */}
       <div className="flex-1 py-4 px-3 overflow-y-auto space-y-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = item.href === "/" 
+            ? pathname === "/" || pathname === "/index.html"
+            : pathname.startsWith(item.href);
           const Icon = item.icon;
 
           return (
@@ -99,7 +104,7 @@ export const Sidebar: React.FC = () => {
             >
               <Icon
                 className={cn(
-                  "w-5 h-5 shrink-0 transition-transform group-hover:scale-105",
+                  "w-6 h-6 shrink-0 transition-transform group-hover:scale-105",
                   isActive ? "text-white" : "text-gray-400 group-hover:text-gray-200"
                 )}
               />
@@ -140,19 +145,31 @@ export const Sidebar: React.FC = () => {
               : "text-gray-400 hover:text-white hover:bg-card/50"
           )}
         >
-          <Settings className="w-5 h-5 shrink-0" />
+          <Settings className="w-6 h-6 shrink-0" />
           {!collapsed && <span>Settings</span>}
         </Link>
 
-        <div className="flex items-center gap-3 p-2.5 rounded-xl bg-card/40 border border-card-border/60">
-          <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/40 text-primary flex items-center justify-center font-bold text-xs shrink-0">
-            <UserCheck className="w-4 h-4" />
-          </div>
-          {!collapsed && (
-            <div className="flex-1 overflow-hidden">
-              <div className="text-xs font-semibold text-white truncate">Inspector V. Patil</div>
-              <div className="text-[10px] text-gray-400 truncate">SCRB Intelligence Unit</div>
+        <div className="flex items-center justify-between p-2.5 rounded-xl bg-card/20 border border-card-border/40">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/40 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+              <UserCheck className="w-4 h-4" />
             </div>
+            {!collapsed && (
+              <div className="flex-1 overflow-hidden">
+                <div className="text-xs font-semibold text-white truncate">{officer ? officer.name : "Guest"}</div>
+                <div className="text-[10px] text-gray-400 truncate">{officer ? `${officer.role} • ${officer.district}` : "Not logged in"}</div>
+              </div>
+            )}
+          </div>
+
+          {!collapsed && (
+            <button
+              onClick={logout}
+              title="Logout Session"
+              className="p-1.5 rounded-lg text-gray-400 hover:text-semantic-danger hover:bg-semantic-danger/10 transition-colors shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           )}
         </div>
 
