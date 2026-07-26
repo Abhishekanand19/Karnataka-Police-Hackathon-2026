@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .panel-heading { @apply mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-500; }
+  .action-link { @apply flex items-center justify-center gap-1.5 rounded-lg border border-border bg-card/50 px-2 py-2 text-xs font-semibold text-gray-200 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/10 hover:text-white; }
+  .page-loading { @apply flex h-full min-h-[240px] w-full items-center justify-center text-sm font-medium text-gray-400; }
+}
+
 :root {
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
@@ -13,6 +19,16 @@ body {
   color: #F3F4F6;
   font-family: var(--font-sans);
   overflow-x: hidden;
+}
+
+button:not(:disabled), a {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+  transition-duration: 180ms;
+  transition-timing-function: ease-out;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.98);
 }
 
 /* Custom Scrollbar for Command Centre Feel */
