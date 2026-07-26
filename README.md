@@ -118,7 +118,7 @@ Compiles summaries, networks, and spatial data into standardized, exportable int
 ## 🎯 Golden Demo Workflow
 
 Want to test the platform yourself? Follow this standard investigation flow:
-1. **Login:** Access the system as a verified officer.
+1. **Login:** Access the system as a verified officer example--->Badge ID-ksp-103 , password ----. any number .
 2. **Select FIR:** Choose an active case (e.g., *FIR-2026-00491: Cyber Fraud*).
 3. **Review Dashboard:** Check the automated risk score and recommended next steps.
 4. **Explore the Network:** Jump into the Network Graph to find common associates linked to the primary suspect.
