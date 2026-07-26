@@ -50,3 +50,5 @@ backend/.env
 .catalyst/
 logs/
 *.log
+.next-dev/
+temp_serve/
