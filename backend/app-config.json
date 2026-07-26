@@ -3,11 +3,6 @@
   "build_path": ".",
   "stack": "node18",
   "memory": 256,
-  "env_variables": {
-    "NODE_ENV": "production",
-    "CATALYST_PROJECT_ID": "54256000000013048",
-    "CATALYST_ENVIRONMENT": "development"
-  },
   "scripts": {
     "preserve": "npm run build",
     "predeploy": "npm run build"
