@@ -5,8 +5,9 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { TopNavbar } from "@/components/layout/top-navbar";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { NotificationCenter } from "@/components/layout/notification-center";
-import { SpeedDial } from "@/components/ui/speed-dial";
 import { PageTransition } from "@/components/layout/page-transition";
+import { usePathname } from "next/navigation";
+import { useInvestigation } from "@/providers/investigation-provider";
 
 export interface AppShellProps {
   children: React.ReactNode;
@@ -15,23 +16,28 @@ export interface AppShellProps {
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [commandCenterMode, setCommandCenterMode] = useState(false);
+  const pathname = usePathname();
+  const { mounted } = useInvestigation();
+
+  const isLoginRoute = pathname.startsWith("/login");
+
+  if (!mounted && !isLoginRoute) return <div className="h-screen w-screen bg-background" />; // Prevent flash of unauthenticated state
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background text-gray-100 font-sans antialiased">
-      {/* Collapsible Left Sidebar (Hidden in full Command Center Mode) */}
-      {!commandCenterMode && <Sidebar />}
+      {/* Fixed Left Sidebar */}
+      {!isLoginRoute && <Sidebar />}
 
       {/* Main Content Viewport */}
       <div className="flex flex-col flex-1 h-full overflow-hidden min-w-0">
-        <TopNavbar
-          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
-          onOpenNotifications={() => setNotificationsOpen(true)}
-          commandCenterMode={commandCenterMode}
-          onToggleCommandCenterMode={() => setCommandCenterMode(!commandCenterMode)}
-        />
+        {!isLoginRoute && (
+          <TopNavbar
+            onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+            onOpenNotifications={() => setNotificationsOpen(true)}
+          />
+        )}
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-background relative">
+        <main className={`flex flex-col flex-1 min-h-0 overflow-y-auto bg-background relative ${!isLoginRoute ? "p-4 md:p-6" : ""}`}>
           <PageTransition>{children}</PageTransition>
         </main>
       </div>
@@ -46,8 +52,6 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         isOpen={notificationsOpen}
         onClose={() => setNotificationsOpen(false)}
       />
-
-      <SpeedDial />
     </div>
   );
 };
