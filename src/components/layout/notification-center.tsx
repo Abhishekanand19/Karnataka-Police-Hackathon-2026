@@ -5,6 +5,7 @@ import { Drawer } from "@/components/ui/drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, ShieldAlert, CheckCircle2, Info, Search, Check, Filter } from "lucide-react";
+import { MOCK_DB } from "@/lib/mock-database";
 
 export interface NotificationItem {
   id: string;
@@ -16,12 +17,15 @@ export interface NotificationItem {
   district?: string;
 }
 
-export const mockNotifications: NotificationItem[] = [
-  { id: "not-01", title: "Critical Hotspot Spike: Indiranagar", message: "Property theft incidents surpassed +45% threshold in Sector 3.", type: "critical", timestamp: "10 mins ago", read: false, district: "Bengaluru Urban" },
-  { id: "not-02", title: "New Accused Network Link", message: "Graph engine linked Suspect #A-901 to Canara Bank Mule A/C 948102841.", type: "warning", timestamp: "35 mins ago", read: false, district: "Bengaluru Urban" },
-  { id: "not-03", title: "Judicial Chargesheet Submitted", message: "Inspector V. Patil submitted 120-page chargesheet for FIR-2026-00491.", type: "info", timestamp: "2 hours ago", read: true, district: "Bengaluru Urban" },
-  { id: "not-04", title: "Statewide Crime Intelligence Sync", message: "SCRB Database synchronized 1,420 synthetic FIR records.", type: "event", timestamp: "4 hours ago", read: true },
-];
+export const mockNotifications: NotificationItem[] = MOCK_DB.emergingAlerts.map((alert, idx) => ({
+  id: alert.id,
+  title: alert.type === "Critical" ? "Critical Alert" : "System Notification",
+  message: alert.message,
+  type: alert.type === "Critical" ? "critical" : alert.type === "Alert" ? "warning" : "info",
+  timestamp: alert.time,
+  read: idx > 1,
+  district: "Bengaluru Urban"
+}));
 
 export interface NotificationCenterProps {
   isOpen: boolean;
