@@ -25,6 +25,16 @@ app.use(catalystInitMiddleware);
 // Mount API Routes
 app.use("/api", apiRoutes);
 
+// Root Health Route
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    name: "CrimeLens AI Backend",
+    status: "Operational",
+    version: "1.0.0",
+    api: "/api"
+  });
+});
+
 // Global Error Handler
 app.use(globalErrorHandler);
 
