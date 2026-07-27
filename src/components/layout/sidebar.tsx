@@ -31,11 +31,11 @@ export interface NavItem {
 
 const navItems: NavItem[] = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Hotspot Map", href: "/map", icon: MapPin, badge: "Live" },
-  { name: "Network Graph", href: "/network", icon: GitFork },
-  { name: "AI Copilot", href: "/copilot", icon: Bot, badge: "AI" },
-  { name: "Timeline Replay", href: "/timeline", icon: History },
-  { name: "Intelligence Reports", href: "/reports", icon: FileText },
+  { name: "Hotspot Map", href: "/map/", icon: MapPin, badge: "Live" },
+  { name: "Network Graph", href: "/network/", icon: GitFork },
+  { name: "AI Copilot", href: "/copilot/", icon: Bot, badge: "AI" },
+  { name: "Timeline Replay", href: "/timeline/", icon: History },
+  { name: "Intelligence Reports", href: "/reports/", icon: FileText },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -137,10 +137,10 @@ export const Sidebar: React.FC = () => {
       {/* Footer & User Profile */}
       <div className="p-3 border-t border-border space-y-2">
         <Link
-          href="/settings"
+          href="/settings/"
           className={cn(
             "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
-            pathname === "/settings"
+            pathname === "/settings/"
               ? "bg-card text-white border border-border"
               : "text-gray-400 hover:text-white hover:bg-card/50"
           )}

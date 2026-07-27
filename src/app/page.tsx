@@ -25,7 +25,7 @@ export default function OperationalDashboard() {
   // Redirect to workspace if no active investigation is set
   useEffect(() => {
     if (mounted && officer && !activeInvestigation) {
-      router.push("/workspace");
+      router.push("/workspace/");
     }
   }, [mounted, officer, activeInvestigation, router]);
 

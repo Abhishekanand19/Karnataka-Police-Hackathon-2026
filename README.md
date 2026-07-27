@@ -21,9 +21,9 @@
 
 <br />
 
-> 🎥 **Watch the Full Demo on YouTube:** [CrimeLens AI Showcase](https://www.youtube.com/watch?v=lTZSI8-1KpM)
+> 🎥 **Watch the Full Demo on YouTube:---->** [CrimeLens AI Showcase](https://www.youtube.com/watch?v=lTZSI8-1KpM)
 >
-> 🚀 **Live Deployment:** [Test the Platform Here](https://ksp-crimelens-2026-60079412118.development.catalystserverless.in/app/login/)
+> 🚀 **Live Deployment:---->** [Test the Platform Here](https://ksp-crimelens-2026-60079412118.development.catalystserverless.in/app/login/)
 
 ---
 
@@ -100,16 +100,21 @@ Compiles summaries, networks, and spatial data into standardized, exportable int
 ## 🖼️ Platform Screenshots Gallery
 
 <div align="center">
-  
-| Operational Dashboard | Criminal Network Graph |
-|:---:|:---:|
-| <img src="docs/assets/screenshot-dashboard.png" width="400" alt="Dashboard" /> | <img src="docs/assets/screenshot-network.png" width="400" alt="Network Graph" /> |
-| *Real-time metrics and AI recommendations* | *Visualizing hidden syndicates and connections* |
 
-| AI Copilot & Map | Timeline Replay |
+| Dashboard | Hotspot Intelligence Map |
 |:---:|:---:|
-| <img src="docs/assets/screenshot-copilot.png" width="400" alt="Copilot" /> | <img src="docs/assets/screenshot-timeline.png" width="400" alt="Timeline" /> |
-| *Context-aware natural language assistance* | *Scrubbing through chronological case events* |
+| <img src="docs/assets/screenshot-dashboard.png" width="420" alt="Dashboard" /> | <img src="docs/assets/Screenshot-map.png" width="420" alt="Hotspot Map" /> |
+| *Real-time command center with AI-powered investigation insights.* | *Interactive spatial intelligence with hotspot clustering and evidence locations.* |
+
+| Criminal Network Graph | AI Investigation Copilot |
+|:---:|:---:|
+| <img src="docs/assets/screenshot-network.png" width="420" alt="Network Graph" /> | <img src="docs/assets/screenshot-copilot.png" width="420" alt="AI Copilot" /> |
+| *Visualize hidden relationships between suspects, evidence, accounts, and telecom entities.* | *Ask natural language questions and receive investigation-aware AI insights.* |
+
+| Investigation Timeline Replay | Intelligence Report Generator |
+|:---:|:---:|
+| <img src="docs/assets/screenshot-timeline.png" width="420" alt="Timeline Replay" /> | <img src="docs/assets/Screenshot-report.png" width="420" alt="Intelligence Report" /> |
+| *Replay the investigation chronologically with AI-assisted event analysis.* | *Generate professional intelligence reports ready for download and sharing.* |
 
 </div>
 
@@ -127,14 +132,20 @@ Want to test the platform yourself? Follow this standard investigation flow:
 
 ---
 
-## 📊 Benchmarks & Impact
+## 📊 Performance Benchmarks
 
-- ⏱️ **Investigation Speed:** Reduces case context compilation from hours to seconds.
-- 🧠 **Centralized Intelligence:** Merges spatial, temporal, and relational data into one pane of glass.
-- 🤖 **AI Assistance:** Eliminates manual reading of massive FIR documents via semantic summarization.
-- 📈 **Visualization:** Instantly translates raw databases into actionable visual nodes and geographic hotspots.
-- 📑 **Reporting:** Streamlines administrative overhead with one-click report generation.
+<div align="center">
 
+| **Metric** | **Result** | **Remarks** |
+|:-----------|:-----------|:------------|
+| **Frontend Bundle Size** | **~87.4 kB First Load JS** | Optimized Next.js production build across 13 routes |
+| **Initial Page Load (FCP)** | **< 1.0 s** | Pre-rendered static pages served via Zoho Catalyst Web Client |
+| **Network Graph Performance** | **Smooth Rendering** | Cytoscape.js powered by the fCoSE layout algorithm for responsive graph visualization |
+| **Spatial Map Performance** | **Hardware-Accelerated** | Mapbox GL JS with WebGL rendering for smooth pan, zoom, and marker interaction |
+
+</div>
+
+> **Note:** This prototype demonstrates fast page loading, responsive investigation graph rendering, and hardware-accelerated spatial visualization, making it well suited for real-time crime intelligence and investigative decision support workflows.
 ---
 
 ## 🛠️ Technology Stack
@@ -211,9 +222,9 @@ While built for the KSP Hackathon, **CrimeLens AI** is designed to scale across 
 
 ---
 
-## 👨‍💻 Team Zero Plus
+## 👨‍💻 Team Zero Flux
 
-Built with ❤️ by **Team Zero Plus**:
+Built with ❤️ by **Team Zero Flus**:
 - **Abhishek Anand**
 - **Ashlesh P**
 

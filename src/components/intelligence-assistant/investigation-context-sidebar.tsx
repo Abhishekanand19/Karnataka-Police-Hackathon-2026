@@ -29,7 +29,7 @@ export const InvestigationContextSidebar: React.FC<SidebarProps> = ({ onQuickAct
         <h3 className="text-white font-bold mb-2">No Context Loaded</h3>
         <p className="text-sm text-gray-400 mb-6">Select an investigation to load into the AI context window.</p>
         <button 
-          onClick={() => router.push("/workspace")}
+          onClick={() => router.push("/workspace/")}
           className="px-4 py-2 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
         >
           <ArrowLeft className="w-4 h-4" /> Go to Workspace
@@ -127,7 +127,7 @@ export const InvestigationContextSidebar: React.FC<SidebarProps> = ({ onQuickAct
       {/* Footer */}
       <div className="p-4 border-t border-border/50 bg-card/30">
         <button 
-          onClick={() => router.push("/workspace")}
+          onClick={() => router.push("/workspace/")}
           className="w-full py-2 bg-card hover:bg-card-hover border border-border rounded-lg text-xs font-bold text-white transition-colors"
         >
           Change Investigation

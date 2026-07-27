@@ -74,8 +74,17 @@ export function InvestigationProvider({ children }: { children: React.ReactNode 
     if (!mounted) return;
     
     let currentPath = pathname;
+    
+    // Catalyst SPA fallback edge cases
     if (currentPath === "/index.html") {
       router.replace("/");
+      return;
+    }
+    
+    // With trailingSlash: true, we no longer strip it.
+    // However, if we receive a non-root path without a trailing slash, we append it.
+    if (!currentPath.endsWith("/") && currentPath !== "") {
+      router.replace(currentPath + "/");
       return;
     }
     
@@ -83,9 +92,9 @@ export function InvestigationProvider({ children }: { children: React.ReactNode 
     
     // Auth Guarding
     if (!officer && !isLogin) {
-      router.replace("/login");
+      router.replace("/login/");
     } else if (officer && isLogin) {
-      router.replace("/workspace");
+      router.replace("/workspace/");
     }
   }, [officer, pathname, mounted, router]);
 
@@ -98,7 +107,7 @@ export function InvestigationProvider({ children }: { children: React.ReactNode 
     if (foundOfficer && cleanId.length > 0) {
       setOfficer(foundOfficer);
       sessionStorage.setItem("crimeLensOfficer", JSON.stringify(foundOfficer));
-      router.replace("/workspace");
+      router.replace("/workspace/");
       return true;
     }
     return false;
@@ -109,7 +118,7 @@ export function InvestigationProvider({ children }: { children: React.ReactNode 
     setActiveInvestigation(null);
     sessionStorage.removeItem("crimeLensOfficer");
     sessionStorage.removeItem("crimeLensInvestigation");
-    router.replace("/login");
+    router.replace("/login/");
   };
 
   const setInvestigation = (type: string, entity: string, entityId: string) => {
