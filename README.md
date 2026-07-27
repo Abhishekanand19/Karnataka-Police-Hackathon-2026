@@ -23,7 +23,7 @@
 
 > 🎥 **Watch the Full Demo on YouTube:---->** [CrimeLens AI Showcase](https://www.youtube.com/watch?v=lTZSI8-1KpM)
 >
-> 🚀 **Live Deployment:---->** [Test the Platform Here](https://ksp-crimelens-2026-60079412118.development.catalystserverless.in/app/login/)
+> 🚀 **Live Deployment:---->** [Test the Platform Here](https://ksp-crimelens-2026-60079412118.development.catalystserverless.in/app/login)
 
 ---
 
@@ -224,7 +224,7 @@ While built for the KSP Hackathon, **CrimeLens AI** is designed to scale across 
 
 ## 👨‍💻 Team Zero Flux
 
-Built with ❤️ by **Team Zero Flus**:
+Built with ❤️ by **Team Zero Flux**:
 - **Abhishek Anand**
 - **Ashlesh P**
 
