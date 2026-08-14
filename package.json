@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "node -e \"require('fs').writeFileSync('out/client-package.json', JSON.stringify({name: 'crimelens-frontend', version: '1.0.0', homepage: 'index.html'}, null, 2))\"",
+    "postbuild": "node -e \"const fs=require('fs'); fs.copyFileSync('out/index.html','out/app.html'); fs.writeFileSync('out/client-package.json', JSON.stringify({name:'crimelens-frontend',version:'1.0.0',homepage:'index.html','404':'app.html'},null,2))\"",
     "start": "next start",
     "lint": "next lint"
   },
@@ -16,6 +16,8 @@
     "cytoscape-fcose": "^2.2.0",
     "date-fns": "^4.4.0",
     "framer-motion": "^11.11.9",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.453.0",
     "mapbox-gl": "^3.7.0",
     "next": "^14.2.15",
