@@ -1,59 +1,135 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  * {
+    border-color: theme('colors.border');
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: #0B1220;
+    color: #F3F4F6;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+    letter-spacing: -0.006em;
+  }
+
+  /* Tighter optical tracking on display type — reads more like a designed product */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Numeric data (KPIs, tables, timestamps) should align in columns */
+  .tabular-nums,
+  th, td,
+  time,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum', 'cv02', 'cv03', 'cv04';
+  }
+
+  /* Accessible, consistent keyboard focus everywhere */
+  :focus-visible {
+    outline: 2px solid rgba(37, 99, 235, 0.85);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  /* Pointer interactions shouldn't show the keyboard ring */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background: rgba(37, 99, 235, 0.32);
+    color: #ffffff;
+  }
+}
+
 @layer components {
-  .panel-heading { @apply mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-500; }
+  .panel-heading { @apply mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-500; }
   .action-link { @apply flex items-center justify-center gap-1.5 rounded-lg border border-border bg-card/50 px-2 py-2 text-xs font-semibold text-gray-200 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/10 hover:text-white; }
   .page-loading { @apply flex h-full min-h-[240px] w-full items-center justify-center text-sm font-medium text-gray-400; }
+
+  /* Hairline separators that read as intentional, not heavy */
+  .divider-x { @apply h-px w-full bg-gradient-to-r from-transparent via-border to-transparent; }
+
+  /* The standard command-centre panel — refined two-layer elevation, no heavy glow */
+  .surface-panel {
+    @apply bg-surface border border-border/70 rounded-2xl;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28), 0 12px 32px -16px rgba(0, 0, 0, 0.55);
+  }
 }
 
-:root {
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-
-body {
-  background-color: #0B1220;
-  color: #F3F4F6;
-  font-family: var(--font-sans);
-  overflow-x: hidden;
-}
-
+/* Motion should communicate, never distract */
 button:not(:disabled), a {
   transition-property: color, background-color, border-color, opacity, transform, box-shadow;
-  transition-duration: 180ms;
-  transition-timing-function: ease-out;
+  transition-duration: 160ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 button:not(:disabled):active {
   transform: scale(0.98);
 }
 
-/* Custom Scrollbar for Command Centre Feel */
+/* Refined command-centre scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B1220;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #374151;
-  border-radius: 3px;
+  background: #2B3648;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4B5563;
+  background: #3B475C;
+  background-clip: padding-box;
 }
 
-/* Glassmorphism Utility */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2B3648 transparent;
+}
+
+/* Glassmorphism Utility — used sparingly for overlays only */
 .glass-panel {
-  background: rgba(31, 41, 55, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(55, 65, 81, 0.8);
+  background: rgba(17, 24, 39, 0.72);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(55, 65, 81, 0.7);
+}
+
+/* Respect user motion preferences (accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
