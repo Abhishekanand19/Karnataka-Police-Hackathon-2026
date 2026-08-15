@@ -4,7 +4,20 @@ import React, { useEffect, useState } from "react";
 import { useInvestigation } from "@/providers/investigation-provider";
 import { Target, ChevronRight, Activity } from "lucide-react";
 import Link from "next/link";
-import { NetworkGraphCanvas, SelectedGraphNode } from "@/components/network-analysis/network-graph-canvas";
+import dynamic from "next/dynamic";
+import type { SelectedGraphNode } from "@/components/network-analysis/network-graph-canvas";
+
+const NetworkGraphCanvas = dynamic(
+  () => import("@/components/network-analysis/network-graph-canvas").then(m => m.NetworkGraphCanvas),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 flex items-center justify-center bg-[#0a0c14]">
+        <span className="rounded-lg bg-surface/90 px-4 py-2 text-sm font-medium text-gray-300">Building relationship graph…</span>
+      </div>
+    ),
+  }
+);
 import { NetworkControls } from "@/components/network-analysis/network-controls";
 import { EntityIntelligencePanel } from "@/components/network-analysis/entity-intelligence-panel";
 import { GraphLegend } from "@/components/network-analysis/graph-legend";
