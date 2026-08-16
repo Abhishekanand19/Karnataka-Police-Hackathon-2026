@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ReportConfigurationSidebar, ReportConfig } from "@/components/intelligence-reports/report-configuration-sidebar";
-import { DocumentPreviewCanvas } from "@/components/intelligence-reports/document-preview-canvas";
+import { DocumentPreviewCanvas, DocumentPreviewHandle } from "@/components/intelligence-reports/document-preview-canvas";
 
 export default function ReportsPage() {
   const [config, setConfig] = useState<ReportConfig>({
@@ -17,17 +17,18 @@ export default function ReportsPage() {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const canvasRef = useRef<DocumentPreviewHandle>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleGenerate = () => {
+  // Generate = compile briefly, then produce and download the actual PDF.
+  const handleGenerate = async () => {
     setIsGenerating(true);
-    // Fake compilation delay to simulate AI processing the document
-    setTimeout(() => {
-      setIsGenerating(false);
-    }, 1200);
+    await new Promise(r => setTimeout(r, 700));
+    setIsGenerating(false);
+    await canvasRef.current?.exportPdf();
   };
 
   if (!mounted) return <div className="page-loading">Preparing intelligence dossier…</div>;
@@ -46,7 +47,7 @@ export default function ReportsPage() {
 
       {/* 70% Live Document Preview */}
       <div className="flex-1 h-full min-w-0 relative border-l border-border/50 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.5)] print:border-none print:shadow-none print:w-full print:m-0">
-        <DocumentPreviewCanvas config={config} isGenerating={isGenerating} />
+        <DocumentPreviewCanvas ref={canvasRef} config={config} isGenerating={isGenerating} />
       </div>
 
     </div>
