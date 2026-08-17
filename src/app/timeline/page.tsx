@@ -19,9 +19,19 @@ export default function TimelinePage() {
     return caseContext?.timeline || [];
   }, [caseContext]);
 
+  const sortedEvents = useMemo(
+    () => [...timelineEvents].sort((a, b) => a.stepNumber - b.stepNumber),
+    [timelineEvents]
+  );
+
   const activeEvent = useMemo(() => {
-    return timelineEvents.find(e => e.id === activeEventId) || null;
-  }, [activeEventId, timelineEvents]);
+    return sortedEvents.find(e => e.id === activeEventId) || null;
+  }, [activeEventId, sortedEvents]);
+
+  const activeIndex = useMemo(
+    () => sortedEvents.findIndex(e => e.id === activeEventId),
+    [activeEventId, sortedEvents]
+  );
 
   useEffect(() => setActiveEventId(null), [caseContext?.fir.firNumber]);
 
@@ -32,7 +42,7 @@ export default function TimelinePage() {
       
       {/* 25% Investigation Summary Sidebar */}
       <div className="w-[350px] shrink-0 h-full z-10 relative shadow-2xl">
-        <InvestigationSummarySidebar />
+        <InvestigationSummarySidebar activeEvent={activeEvent} activeIndex={activeIndex} totalEvents={sortedEvents.length} />
       </div>
 
       {/* 75% Interactive Timeline Canvas */}
