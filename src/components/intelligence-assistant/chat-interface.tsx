@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Bot, User } from "lucide-react";
-import { ResponseFormatter, AIResponseData } from "./response-formatter";
+import { ResponseFormatter } from "./response-formatter";
+import { AIResponseData } from "@/lib/copilot-engine";
 
 export interface Message {
   id: string;
@@ -65,7 +66,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
               {msg.role === "user" ? (
                 <div className="text-gray-200 leading-relaxed text-sm">{msg.content}</div>
               ) : msg.structuredData ? (
-                <ResponseFormatter data={msg.structuredData} />
+                <ResponseFormatter data={msg.structuredData} onFollowUp={onSendMessage} />
               ) : (
                 <div className="text-gray-200 leading-relaxed text-sm">{msg.content}</div>
               )}
