@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useInvestigation } from "@/providers/investigation-provider";
 import { MOCK_DB } from "@/lib/mock-database";
-import { 
-  Bot, Briefcase, ShieldAlert, FileText, 
-  Users, Network, FolderOpen, ArrowLeft 
+import {
+  Bot, ShieldAlert, FileText,
+  Users, Network, FolderOpen, ArrowLeft
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { EntityDetailDrawer, DrawerView } from "@/components/investigation/entity-detail-drawer";
 
 interface SidebarProps {
   onQuickAction: (action: string) => void;
@@ -16,11 +17,17 @@ interface SidebarProps {
 
 export const InvestigationContextSidebar: React.FC<SidebarProps> = ({ onQuickAction }) => {
   const router = useRouter();
-  const { activeInvestigation, officer } = useInvestigation();
+  const { activeInvestigation, officer, caseContext } = useInvestigation();
+  const [view, setView] = useState<DrawerView>(null);
 
   const fir = useMemo(() => {
     return MOCK_DB.firs.find(f => f.firNumber === activeInvestigation?.entityId);
   }, [activeInvestigation]);
+
+  // Real linked-entity total (was a fabricated linkedSuspects*3+2).
+  const networkNodes = caseContext
+    ? caseContext.suspects.length + caseContext.victims.length + caseContext.phones.length + caseContext.accounts.length + (caseContext.vehicles?.length || 0)
+    : 0;
 
   if (!activeInvestigation || !fir) {
     return (
@@ -38,20 +45,23 @@ export const InvestigationContextSidebar: React.FC<SidebarProps> = ({ onQuickAct
     );
   }
 
-  const evidenceCount = MOCK_DB.evidence.filter(e => e.firId === fir.id).length;
+  const evidenceCount = MOCK_DB.evidence.filter(e => e.firId === fir.firNumber).length;
 
+  // Phrased as real investigator questions (not template labels) and covering the
+  // engine's full range of intents, including the money trail and next-step reasoning.
   const quickActions = [
-    "Generate Case Brief",
-    "Generate FIR Summary",
-    "Find Similar Cases",
-    "Risk Assessment",
-    "Suspect Profile",
-    "Timeline Summary"
+    "Give me a case brief",
+    "Who is the primary suspect?",
+    "Trace the money trail",
+    "Assess the threat level",
+    "Find linked cases",
+    "What should I do next?",
   ];
 
   return (
+    <>
     <div className="flex flex-col h-full bg-surface border-r border-border/80 shadow-2xl overflow-hidden">
-      
+
       {/* Header */}
       <div className="p-5 border-b border-border/50 bg-card/30">
         <div className="flex items-center gap-2 mb-3">
@@ -74,24 +84,24 @@ export const InvestigationContextSidebar: React.FC<SidebarProps> = ({ onQuickAct
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Entities in Context</h3>
           
           <div className="grid grid-cols-2 gap-2">
-            <div className="p-2.5 bg-card/40 border border-border/50 rounded-lg flex items-center justify-between">
-              <span className="text-xs text-gray-400 font-semibold">Suspects</span>
-              <div className="flex items-center gap-1.5 text-white font-bold text-sm">
-                <Users className="w-3.5 h-3.5 text-primary" /> {fir.linkedSuspects.length}
+            <button onClick={() => setView("suspects")} className="group p-2.5 bg-card/40 hover:bg-card border border-border/50 hover:border-primary/40 rounded-lg flex items-center justify-between transition-colors">
+              <span className="text-xs text-gray-400 group-hover:text-gray-200 font-semibold">Suspects</span>
+              <div className="flex items-center gap-1.5 text-white font-bold text-sm tabular-nums">
+                <Users className="w-3.5 h-3.5 text-primary" /> {caseContext?.suspects.length ?? fir.linkedSuspects.length}
               </div>
-            </div>
-            <div className="p-2.5 bg-card/40 border border-border/50 rounded-lg flex items-center justify-between">
-              <span className="text-xs text-gray-400 font-semibold">Evidence</span>
-              <div className="flex items-center gap-1.5 text-white font-bold text-sm">
+            </button>
+            <button onClick={() => setView("evidence")} className="group p-2.5 bg-card/40 hover:bg-card border border-border/50 hover:border-primary/40 rounded-lg flex items-center justify-between transition-colors">
+              <span className="text-xs text-gray-400 group-hover:text-gray-200 font-semibold">Evidence</span>
+              <div className="flex items-center gap-1.5 text-white font-bold text-sm tabular-nums">
                 <FolderOpen className="w-3.5 h-3.5 text-accent" /> {evidenceCount}
               </div>
-            </div>
-            <div className="p-2.5 bg-card/40 border border-border/50 rounded-lg flex items-center justify-between col-span-2">
-              <span className="text-xs text-gray-400 font-semibold">Network Nodes</span>
-              <div className="flex items-center gap-1.5 text-white font-bold text-sm">
-                <Network className="w-3.5 h-3.5 text-semantic-warning" /> {fir.linkedSuspects.length * 3 + 2}
+            </button>
+            <button onClick={() => setView("network")} className="group p-2.5 bg-card/40 hover:bg-card border border-border/50 hover:border-primary/40 rounded-lg flex items-center justify-between transition-colors col-span-2">
+              <span className="text-xs text-gray-400 group-hover:text-gray-200 font-semibold">Linked Entities</span>
+              <div className="flex items-center gap-1.5 text-white font-bold text-sm tabular-nums">
+                <Network className="w-3.5 h-3.5 text-semantic-warning" /> {networkNodes}
               </div>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -135,5 +145,7 @@ export const InvestigationContextSidebar: React.FC<SidebarProps> = ({ onQuickAct
       </div>
 
     </div>
+    <EntityDetailDrawer view={view} onClose={() => setView(null)} />
+    </>
   );
 };
