@@ -22,13 +22,13 @@ export const AIInvestigationSummary: React.FC = () => {
   ];
 
   return (
-    <div className="bg-surface border border-border/80 rounded-2xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-full group">
-      {/* Background glow based on risk */}
-      <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-[100px] opacity-20 pointer-events-none transition-colors ${
+    <div className="surface-panel p-6 relative overflow-hidden flex flex-col justify-between h-full group">
+      {/* Single intentional risk-tinted accent — encodes threat level, not decoration */}
+      <div className={`absolute -top-10 -right-10 w-56 h-56 rounded-full blur-[110px] opacity-[0.14] pointer-events-none transition-colors ${
         threatLevel === "Critical" ? "bg-semantic-danger" : threatLevel === "High" ? "bg-semantic-warning" : "bg-primary"
       }`} />
 
-      <div className="relative z-10 space-y-5">
+      <div className="relative z-10 space-y-5 flex-1 min-h-0 overflow-y-auto pr-1 -mr-1">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-sm">
             <Bot className="w-5 h-5" /> AI Case Summary
@@ -72,9 +72,9 @@ export const AIInvestigationSummary: React.FC = () => {
         </div>
         <button 
           onClick={() => router.push("/copilot")}
-          className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
+          className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-sm shadow-primary/20 group/btn"
         >
-          Open AI Analysis <ArrowRight className="w-4 h-4" />
+          Open AI Analysis <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />
         </button>
       </div>
     </div>
