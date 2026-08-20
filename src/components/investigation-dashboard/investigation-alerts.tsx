@@ -21,7 +21,7 @@ export const InvestigationAlerts: React.FC = () => {
 
   if (alerts.length === 0) {
     return (
-      <div className="bg-surface border border-border/80 rounded-2xl p-6 shadow-xl flex flex-col items-center justify-center text-center h-full">
+      <div className="surface-panel p-6 flex flex-col items-center justify-center text-center h-full">
         <Bell className="w-10 h-10 text-gray-500 mb-3" />
         <h3 className="text-white font-bold mb-1">No Active Alerts</h3>
         <p className="text-sm text-gray-400">No new intelligence alerts for this investigation.</p>
@@ -30,7 +30,7 @@ export const InvestigationAlerts: React.FC = () => {
   }
 
   return (
-    <div className="bg-surface border border-border/80 rounded-2xl shadow-xl flex flex-col h-full overflow-hidden">
+    <div className="surface-panel flex flex-col h-full overflow-hidden">
       <div className="p-4 border-b border-border/50 flex items-center gap-2 font-bold text-white uppercase tracking-wider text-sm bg-card/30">
         <Bell className="w-5 h-5 text-primary" /> Intelligence Alerts
       </div>
