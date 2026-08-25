@@ -37,7 +37,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           />
         )}
 
-        <main className={`flex flex-col flex-1 min-h-0 overflow-y-auto bg-background relative ${!isLoginRoute ? "p-4 md:p-6" : ""}`}>
+        <main className="flex flex-col flex-1 min-h-0 overflow-y-auto bg-background relative">
           <PageTransition>{children}</PageTransition>
         </main>
       </div>
