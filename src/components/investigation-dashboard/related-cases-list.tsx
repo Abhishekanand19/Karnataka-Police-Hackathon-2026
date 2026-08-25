@@ -16,7 +16,7 @@ export const RelatedCasesList: React.FC = () => {
 
   if (relatedCases.length === 0) {
     return (
-      <div className="bg-surface border border-border/80 rounded-2xl p-6 shadow-xl flex flex-col items-center justify-center text-center h-full">
+      <div className="surface-panel p-6 flex flex-col items-center justify-center text-center h-full">
         <FileText className="w-10 h-10 text-gray-500 mb-3" />
         <h3 className="text-white font-bold mb-1">No Related Cases</h3>
         <p className="text-sm text-gray-400">No other FIRs in the system share known suspects or MO.</p>
@@ -25,7 +25,7 @@ export const RelatedCasesList: React.FC = () => {
   }
 
   return (
-    <div className="bg-surface border border-border/80 rounded-2xl shadow-xl flex flex-col h-full overflow-hidden">
+    <div className="surface-panel flex flex-col h-full overflow-hidden">
       <div className="p-4 border-b border-border/50 flex items-center justify-between bg-card/30">
         <div className="flex items-center gap-2 font-bold text-white uppercase tracking-wider text-sm">
           <FileText className="w-5 h-5 text-primary" /> Related Cases
