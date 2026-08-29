@@ -14,6 +14,7 @@ declare module 'react-cytoscapejs' {
     pan?: { x: number; y: number };
     minZoom?: number;
     maxZoom?: number;
+    wheelSensitivity?: number;
     zoomingEnabled?: boolean;
     userZoomingEnabled?: boolean;
     panningEnabled?: boolean;
